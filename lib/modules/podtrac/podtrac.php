@@ -2,7 +2,7 @@
 namespace Podlove\Modules\podtrac;
 use \Podlove\Model;
 
-class fyyd extends \Podlove\Modules\Base {
+class podtrac extends \Podlove\Modules\Base {
 
 	protected $module_name = 'podtrac';
 	protected $module_description = 'Add Podtrac Analytics;
