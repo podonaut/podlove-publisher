@@ -35,7 +35,6 @@ class External_Analytics extends \Podlove\Modules\Base {
         
         add_filter('podlove_enclosure_url', function ($original_url) use ( $analytics_prefix ){
             $schemeless_url = preg_replace('/^https?:\/\//', '', $original_url);
-            $podtrac_prefix = $analytics_prefix;
             return trailingslashit( $analytics_prefix ) . $schemeless_url;
         });
     }
