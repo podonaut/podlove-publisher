@@ -128,7 +128,7 @@ class Podcast_Index extends \Podlove\Modules\Base {
 		    }
     }
 
-	// <podcast:recipient type="[lightning]" method="[keysend]" suggested="[number of bitcoin(float)]">[one or more "recipientRecipient" elements]</podcast:recipient>
+	// <podcast:value type="[lightning]" method="[keysend]" suggested="[number of bitcoin(float)]">[one or more "recipientRecipient" elements]</podcast:value>
 	public function add_ns_recipient_to_feed()
     {
 		// This is an explict way of structure the data fetched from the
@@ -182,7 +182,7 @@ class Podcast_Index extends \Podlove\Modules\Base {
 		        $str = $str . " />";
 	        }
 		}
-		$str = $str . "\n\t</podcast:recipient>";
+		$str = $str . "\n\t</podcast:value>";
 	    echo sprintf($str);
    }
 
