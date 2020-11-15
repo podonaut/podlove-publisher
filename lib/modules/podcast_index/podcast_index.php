@@ -18,6 +18,17 @@ class Podcast_Index extends \Podlove\Modules\Base {
             ],
         ]);
 
+        $this->register_option('ns_funding_url', 'string', [
+            'label' => __('Funding:URL', 'podlove-podcasting-plugin-for-wordpress'),
+            'description' => __('Donation/funding links for the podcast', 'podlove-podcasting-plugin-for-wordpress'),
+            'html' => ['class' => 'regular-text podlove-check-input'],
+        ]);
+        $this->register_option('ns_funding_string', 'string', [
+            'label' => __('Funding:String', 'podlove-podcasting-plugin-for-wordpress'),
+            'description' => __('Message in tag', 'podlove-podcasting-plugin-for-wordpress'),
+            'html' => ['class' => 'regular-text podlove-check-input'],
+        ]);
+
         $this->register_option('ns_suggested', 'string', [
             'label' => __('Suggested', 'podlove-podcasting-plugin-for-wordpress'),
             'description' => __('Suggested Amount', 'podlove-podcasting-plugin-for-wordpress'),
@@ -65,18 +76,27 @@ class Podcast_Index extends \Podlove\Modules\Base {
         
 		
 		add_action('podlove_append_to_feed_head', [$this, 'add_ns_locked_to_feed'], 10, 4);
+		add_action('podlove_append_to_feed_head', [$this, 'add_ns_funding_to_feed'], 10, 4);
         //add_action('podlove_append_to_feed_entry', [$this, 'add_ns_person_to_feed'], 10, 4);
-        add_action('podlove_append_to_feed_head', [$this, 'add_ns_value_to_feed'], 10, 4);
+        add_action('podlove_append_to_feed_head', [$this, 'add_ns_recipient_to_feed'], 10, 4);
     }
 
 	// <podcast:locked owner="[podcast owner email address]">[yes or no]</podcast:locked>
 	public function add_ns_locked_to_feed($podcast)
     {
-		$ns_locked = $this->get_module_option( 'ns_locked' );
+		$ns_locked = $this->get_module_option('ns_locked');
 	    if ($ns_locked)
             echo sprintf("\n\t<podcast:locked owner=\"%s\">yes</podcast:locked>", $podcast->owner_email);
         else
             echo sprintf("\n\t<podcast:locked>no</podcast:locked>");
+    }
+
+	// <podcast:locked owner="[podcast owner email address]">[yes or no]</podcast:locked>
+	public function add_ns_funding_to_feed()
+    {
+		$ns_funding_url = $this->get_module_option('ns_funding_url');
+	    if ($ns_funding_url)
+            echo sprintf("\n\t<podcast:funding url=\"%s\">%s</podcast:funding>", $this->get_module_option('ns_funding_url'), $this->get_module_option('ns_funding_string'));
     }
 
 	// <podcast:person role="[host or guest]" img="[(uri of content)]" href="[(uri to website/wiki/blog)]">[name of person]</podcast:person>
@@ -84,11 +104,12 @@ class Podcast_Index extends \Podlove\Modules\Base {
     {
 		$ns_locked = $this->get_module_option( 'ns_locked' );
 		$hosts = [
-            "Dave Keeshan",
-            "Dawcf Keeshan",
+            "Douglas Kastle",
+            "Max Power",
         ];
 		$guests = [
-            "Douglas Kastle",
+            "Jerry Seinfeld",
+            "Dennis O'Brien",
         ];
 	    if ($ns_locked)
             foreach ($hosts as &$host) {
@@ -107,49 +128,62 @@ class Podcast_Index extends \Podlove\Modules\Base {
 		    }
     }
 
-	// <podcast:value type="[lightning]" method="[keysend]" suggested="[number of bitcoin(float)]">[one or more "valueRecipient" elements]</podcast:value>
-	public function add_ns_value_to_feed()
+	// <podcast:recipient type="[lightning]" method="[keysend]" suggested="[number of bitcoin(float)]">[one or more "recipientRecipient" elements]</podcast:recipient>
+	public function add_ns_recipient_to_feed()
     {
-		$values = [];
-		$values[] = [ 
-		    'address' => $this->get_module_option('ns_address0'),
+		// This is an explict way of structure the data fetched from the
+		// MySQL database variables
+		$value = [
+		    'type' => "lightning",
+		    'method' => "keysend",
+		    'suggested' => $this->get_module_option('ns_suggested'),
+		];
+		$recipients = [];
+		$recipients[] = [ 
 		    'name' => $this->get_module_option('ns_name0'),
+		    'type' => "node",
+		    'address' => $this->get_module_option('ns_address0'),
 		    'split' => $this->get_module_option('ns_split0'),
 	    ];
-		$values[] = [ 
-		    'address' => $this->get_module_option('ns_address1'),
+		$recipients[] = [ 
 		    'name' => $this->get_module_option('ns_name1'),
+		    'type' => "node",
+		    'address' => $this->get_module_option('ns_address1'),
 		    'split' => $this->get_module_option('ns_split1'),
 	    ];
-		$values[] = [ 
-		    'address' => $this->get_module_option('ns_address2'),
+		$recipients[] = [ 
 		    'name' => $this->get_module_option('ns_name2'),
+		    'type' => "node",
+		    'address' => $this->get_module_option('ns_address2'),
 		    'split' => $this->get_module_option('ns_split2'),
 	    ];
 		
-	    if ($values[0]['address']) {			
-		    $suggested = $this->get_module_option('ns_suggested');
-			$str = "\n\t";
- 		    $str = $str . "<podcast:value";
-		    $str = $str . " type=\"lightning\"";
-		    $str = $str . " method=\"keysend\"";
-		    $str = $str . " suggested=\"{$suggested}\"" ;
-		    $str = $str . ">";
-            foreach ($values as &$value) {
-	            if ($value['address']) {
-		            $str = $str . "\n\t\t";
-		            $str = $str . "<podcast:valueRecipient";
-		            $str = $str . " name=\"{$value['name']}\"";
-		            $str = $str . " type=\"node\"";
-		            $str = $str . " address=\"{$value['address']}\"";
-		            $str = $str . " split=\"{$value['split']}\"";
-		            $str = $str . " />";
-		            //$str = $str . "\n";
-	            }
-		    }
-		    $str = $str . "\n\t</podcast:value>";
-	        echo sprintf($str);
+        // If there is even one recipeient we print the tag
+		foreach ($recipients as &$recipient) {
+	        if ($recipients['address'])
+                break;			
 	    }
+		
+		$suggested = $this->get_module_option('ns_suggested');
+        $str = "\n\t";
+ 		$str = $str . "<podcast:value";
+		$str = $str . " type=\"{$value['type']}\"";
+		$str = $str . " method=\"{$value['method']}\"";
+		$str = $str . " suggested=\"{$value['suggested']}\"" ;
+		$str = $str . ">";
+        foreach ($recipients as &$recipient) {
+	        if ($recipient['address']) {
+		        $str = $str . "\n\t\t";
+		        $str = $str . "<podcast:valueRecipient";
+		        $str = $str . " name=\"{$recipient['name']}\"";
+		        $str = $str . " type=\"{$recipient['type']}\"";
+		        $str = $str . " address=\"{$recipient['address']}\"";
+		        $str = $str . " split=\"{$recipient['split']}\"";
+		        $str = $str . " />";
+	        }
+		}
+		$str = $str . "\n\t</podcast:recipient>";
+	    echo sprintf($str);
    }
 
 }
@@ -172,5 +206,5 @@ class Podcast_Index extends \Podlove\Modules\Base {
 // <podcast:images srcset="[url to image] [pixelwidth(int)]w, [url to image] [pixelwidth(int)]w, [url to image] [pixelwidth(int)]w, [url to image] [pixelwidth(int)]w" />
 // <podcast:id platform="[service slug]" id="[platform id]" url="[link to the podcast page on the service]" />
 // <podcast:contact type="[feedback or advertising or abuse]">[email address or url]</podcast:contact>
-// <podcast:value type="[lightning]" method="[keysend]" suggested="[number of bitcoin(float)]">[one or more "valueRecipient" elements]</podcast:value>
-//     <podcast:valueRecipient name="[name of recipient(string)]" type="[node]" address="[public key of bitcoin/lightning node(string)]" split="[percentage(int)]" />
+// <podcast:recipient type="[lightning]" method="[keysend]" suggested="[number of bitcoin(float)]">[one or more "recipientRecipient" elements]</podcast:recipient>
+//     <podcast:recipientRecipient name="[name of recipient(string)]" type="[node]" address="[public key of bitcoin/lightning node(string)]" split="[percentage(int)]" />
