@@ -137,7 +137,14 @@ class Podcast_Index extends \Podlove\Modules\Base {
 		    $str = $str . ">";
             foreach ($values as &$value) {
 	            if ($value['address']) {
-		            $str = $str . "\n\t\t<podcast:valueRecipient name=\"{$value['name']}\" type=\"node\" address=\"{$value['address']}\" split=\"{$value['split']}\" />";
+		            $str = $str . "\n\t\t";
+		            $str = $str . "<podcast:valueRecipient";
+		            $str = $str . " name=\"{$value['name']}\"";
+		            $str = $str . " type=\"node\"";
+		            $str = $str . " address=\"{$value['address']}\"";
+		            $str = $str . " split=\"{$value['split']}\"";
+		            $str = $str . " />";
+		            //$str = $str . "\n";
 	            }
 		    }
 		    $str = $str . "\n\t</podcast:value>";
