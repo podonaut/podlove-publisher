@@ -1,11 +1,11 @@
 <?php
-namespace Podlove\Modules\PodcastIndex;
+namespace Podlove\Modules\NamespaceEnhance;
 use \Podlove\Model;
 
-class Podcast_Index extends \Podlove\Modules\Base {
+class Namespace_Enhance extends \Podlove\Modules\Base {
 
-    protected $module_name = 'Podcast Index';
-    protected $module_description = 'Podcast Index Namespace Enhancements';
+    protected $module_name = 'Namespace Enhance';
+    protected $module_description = 'Namespace Enhance Namespace Enhancements';
     protected $module_group = 'metadata';
     public function load() {
         $this->register_option('ns_locked', 'radio', [
