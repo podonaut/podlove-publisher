@@ -102,6 +102,11 @@ class REST_API
                         'required' => false,
                         'type' => ['string', 'null'],
                         'description' => 'Error message if any'
+                    ],
+                    'change_time' => [
+                        'required' => false,
+                        'type' => ['string', 'null'],
+                        'description' => 'Auphonic production change timestamp for successful transfers'
                     ]
                 ]
             ]
@@ -220,6 +225,7 @@ class REST_API
         $status = $request->get_param('status');
         $files = $request->get_param('files');
         $errors = $request->get_param('errors');
+        $change_time = $request->get_param('change_time');
 
         if (!$production_uuid) {
             return new \WP_Error('invalid_production_uuid', 'Production UUID is required', ['status' => 400]);
@@ -241,7 +247,7 @@ class REST_API
             // Convert empty/null errors to null for consistent handling
             $errors = empty($errors) ? null : $errors;
 
-            $this->module->set_plus_transfer_final_status($post_id, $status, $files, $errors);
+            $this->module->set_plus_transfer_final_status($post_id, $status, $files, $errors, $change_time);
 
             return rest_ensure_response([
                 'success' => true,

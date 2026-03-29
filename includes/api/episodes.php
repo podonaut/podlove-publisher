@@ -631,6 +631,7 @@ class WP_REST_PodloveEpisode_Controller extends \WP_REST_Controller
             'auphonic_plus_transfer_status' => get_post_meta($episode->post_id, 'auphonic_plus_transfer_status', true),
             'auphonic_plus_transfer_files' => get_post_meta($episode->post_id, 'auphonic_plus_transfer_files', true),
             'auphonic_plus_transfer_errors' => get_post_meta($episode->post_id, 'auphonic_plus_transfer_errors', true),
+            'auphonic_plus_transfer_change_time' => get_post_meta($episode->post_id, 'auphonic_plus_transfer_change_time', true),
             'show' => $show
         ];
 

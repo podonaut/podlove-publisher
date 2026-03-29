@@ -323,10 +323,11 @@ class Auphonic extends \Podlove\Modules\Base
      * @param string      $status
      * @param null|array  $files
      * @param null|string $errors
+     * @param null|string $change_time
      */
-    public function set_plus_transfer_final_status($post_id, $status, $files = null, $errors = null)
+    public function set_plus_transfer_final_status($post_id, $status, $files = null, $errors = null, $change_time = null)
     {
-        $this->plus_file_transfer->set_final_transfer_status($post_id, $status, $files, $errors);
+        $this->plus_file_transfer->set_final_transfer_status($post_id, $status, $files, $errors, $change_time);
     }
 
     public function convert_chapters_to_string($chapters)

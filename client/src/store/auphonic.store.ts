@@ -50,6 +50,7 @@ export type Production = {
   image: string | null
   metadata: Metadata
   creation_time: string
+  change_time?: string | null
   is_multitrack: boolean
   multi_input_files: AuphonicInputFile[]
   input_file: string

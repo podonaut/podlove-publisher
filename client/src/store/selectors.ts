@@ -133,6 +133,10 @@ const episode = {
     episodeStore.selectors.isAuphonicProductionRunning
   ),
   auphonicWebhookConfig: createSelector(root.episode, episodeStore.selectors.auphonicWebhookConfig),
+  auphonicPlusTransferChangeTime: createSelector(
+    root.episode,
+    episodeStore.selectors.auphonicPlusTransferChangeTime
+  ),
   license_name: createSelector(root.episode, episodeStore.selectors.license_name),
   license_url: createSelector(root.episode, episodeStore.selectors.license_url),
   contributions: createSelector(

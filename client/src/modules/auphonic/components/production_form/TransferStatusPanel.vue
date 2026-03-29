@@ -63,6 +63,14 @@
             class="mt-2"
           />
         </div>
+        <div class="mt-4" v-if="canReupload">
+          <button
+            @click="$emit('action')"
+            class="inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+          >
+            {{ __('Re-upload to PLUS', 'podlove-podcasting-plugin-for-wordpress') }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -170,6 +178,10 @@ export default defineComponent({
     errors: {
       type: String,
       default: undefined
+    },
+    canReupload: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['action']

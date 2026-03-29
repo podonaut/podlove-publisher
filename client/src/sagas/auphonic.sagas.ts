@@ -888,6 +888,8 @@ function* processTransferQueue(
   postId: Number,
   transferQueue: any[]
 ): any {
+  const production: auphonic.Production | null = yield select(selectors.auphonic.production)
+  const productionChangeTime = production?.change_time || null
   let transferredFiles = 0
   let hasErrors = false
   const transferResults: any[] = []
@@ -977,6 +979,10 @@ function* processTransferQueue(
       files: transferResults
     }
 
+    if (finalStatus === 'completed' && productionChangeTime) {
+      payload.change_time = productionChangeTime
+    }
+
     // Only include errors parameter if there are errors
     if (hasErrors) {
       if (transferredFiles === 0) {
@@ -1000,6 +1006,15 @@ function* processTransferQueue(
       files: transferResults.map(updateFileResult),
     })
   )
+
+  if (finalStatus === 'completed' && productionChangeTime) {
+    yield put(
+      episode.update({
+        prop: 'auphonic_plus_transfer_change_time',
+        value: productionChangeTime,
+      })
+    )
+  }
 }
 
 function* transferFile(

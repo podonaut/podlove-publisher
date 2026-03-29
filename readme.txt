@@ -135,6 +135,7 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 * new: Auphonic module now supports providing an API key in addition to the OAuth flow
 * new: Auphonic module now supports chapter images in the production
+* new: when re-running a production in Auphonic, Publisher now detects new files and presents a "Re-upload to PLUS" button
 * fix: switch Auphonic OAuth to the new `auth.podlove.org` service (OAuth in older Publisher versions will no longer work)
 
 **Platform & Integrations**

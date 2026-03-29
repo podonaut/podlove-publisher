@@ -7,6 +7,7 @@
         :status="plusTransferStatus || 'waiting_for_webhook'"
         :files="plusTransferFiles"
         :errors="plusTransferErrors"
+        :can-reupload="canReupload"
         @action="triggerManualTransfer"
       />
     </div>
@@ -38,6 +39,7 @@ export default defineComponent({
         plusTransferStatus: selectors.auphonic.plusTransferStatus,
         plusTransferFiles: selectors.auphonic.plusTransferFiles,
         plusTransferErrors: selectors.auphonic.plusTransferErrors,
+        lastTransferChangeTime: selectors.episode.auphonicPlusTransferChangeTime,
       }),
       dispatch: injectAppDispatch(),
     }
@@ -79,6 +81,18 @@ export default defineComponent({
     },
     plusTransferErrors(): string | undefined {
       return this.state.plusTransferErrors
+    },
+    lastTransferChangeTime(): string | null | undefined {
+      return this.state.lastTransferChangeTime
+    },
+    canReupload(): boolean {
+      return (
+        this.plusTransferStatus === 'completed' &&
+        this.production?.status_string === 'Done' &&
+        !!this.production?.change_time &&
+        !!this.lastTransferChangeTime &&
+        this.production.change_time !== this.lastTransferChangeTime
+      )
     },
     showPlusTransferStatus(): boolean {
       return this.production?.status === 3
