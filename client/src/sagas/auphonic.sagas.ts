@@ -561,60 +561,67 @@ function* handleSaveProduction(
 ): any {
   yield put(auphonic.startSaving())
 
-  const uuid = action.payload.uuid
-  //@ts-ignore
-  const productionPayload = yield select(getSaveProductionPayload)
-  //@ts-ignore
-  const tracksPayload = yield select(getTracksPayload)
+  try {
+    const uuid = action.payload.uuid
+    //@ts-ignore
+    const productionPayload = yield select(getSaveProductionPayload)
+    //@ts-ignore
+    const tracksPayload = yield select(getTracksPayload)
 
-  productionPayload.chapters = yield call(inlineChapterImages, productionPayload.chapters)
+    productionPayload.chapters = yield call(inlineChapterImages, productionPayload.chapters)
 
-  // delete all existing chapters, otherwise we append them
-  //@ts-ignore
-  yield auphonicApi.delete(`production/${uuid}/chapters.json`)
+    // delete all existing chapters, otherwise we append them
+    //@ts-ignore
+    yield auphonicApi.delete(`production/${uuid}/chapters.json`)
 
-  const progressChannel: Channel<ProgressPayload> = yield call(
-    createAndWatchProgressChannel,
-    progress.setProgress
-  )
-
-  const handleProgress = createProgressHandler(progressChannel)
-
-  // save multi_input_files by saving/updating each track individually
-  yield all(
-    tracksPayload.map((trackWrapper: any) =>
-      call(handleSaveTrack, auphonicApi, uuid, trackWrapper, handleProgress)
-    )
-  )
-
-  // handle single track if input_file is set
-  // FIXME: only upload when changed, see multitrack logic
-  const input_file = productionPayload.input_file
-  if (typeof input_file == 'object') {
-    yield call(
-      auphonicApi.upload,
-      `production/${uuid}/upload.json`,
-      { file: input_file },
-      { hooks: { onUploadProgress: handleProgress('singletrack') } }
+    const progressChannel: Channel<ProgressPayload> = yield call(
+      createAndWatchProgressChannel,
+      progress.setProgress
     )
 
-    delete productionPayload.input_file
+    const handleProgress = createProgressHandler(progressChannel)
+
+    // save multi_input_files by saving/updating each track individually
+    yield all(
+      tracksPayload.map((trackWrapper: any) =>
+        call(handleSaveTrack, auphonicApi, uuid, trackWrapper, handleProgress)
+      )
+    )
+
+    // handle single track if input_file is set
+    // FIXME: only upload when changed, see multitrack logic
+    const input_file = productionPayload.input_file
+    if (typeof input_file == 'object') {
+      yield call(
+        auphonicApi.upload,
+        `production/${uuid}/upload.json`,
+        { file: input_file },
+        { hooks: { onUploadProgress: handleProgress('singletrack') } }
+      )
+
+      delete productionPayload.input_file
+    }
+
+    // Keep poster upload best-effort so external URLs without CORS do not block saving metadata.
+    const poster_file = productionPayload.image
+
+    try {
+      yield call(uploadProductionImage, auphonicApi, uuid, poster_file, handleProgress)
+    } catch (error) {
+      console.warn('Skipping Auphonic production image upload after fetch/upload failed', error)
+    }
+
+    delete productionPayload.image
+
+    // after the tracks, update all other metadata
+    const {
+      result: { data: production },
+    } = yield auphonicApi.post(`production/${uuid}.json`, productionPayload)
+
+    yield put(auphonic.setProduction(production))
+  } finally {
+    yield put(auphonic.stopSaving())
   }
-
-  // upload cover image
-  const poster_file = productionPayload.image
-
-  yield call(uploadProductionImage, auphonicApi, uuid, poster_file, handleProgress)
-
-  delete productionPayload.image
-
-  // after the tracks, update all other metadata
-  const {
-    result: { data: production },
-  } = yield auphonicApi.post(`production/${uuid}.json`, productionPayload)
-
-  yield put(auphonic.setProduction(production))
-  yield put(auphonic.stopSaving())
 }
 
 function* fetchServiceFiles(
