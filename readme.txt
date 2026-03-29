@@ -126,6 +126,7 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 = 4.4.0 =
 
 * new: "Recent Downloads" chart can now be added to the WordPress dashboard
+* new: add download tracking support for Matomo (see Expert Settings > Tracking)
 * new: Auphonic module now supports providing an API key in addition to the OAuth flow
 * new: Auphonic module now supports chapter images in the production
 * new: Codeberg support as contributor social service
