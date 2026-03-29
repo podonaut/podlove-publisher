@@ -163,10 +163,10 @@ function matomo_track_download($request_id, $media_file, $ua_string, $ptm_contex
         // Strip token_auth from URL encoded body for logging
         $log_body = $body;
         if ($matomo_token) {
-            $log_body = str_replace('token_auth=' . rawurlencode($matomo_token), 'token_auth=[SECRET]', $body);
+            $log_body = str_replace('token_auth='.rawurlencode($matomo_token), 'token_auth=[SECRET]', $body);
         }
 
-        \Podlove\Log::get()->addDebug('Matomo Tracking request successful: ' . $log_body);
+        \Podlove\Log::get()->addDebug('Matomo Tracking request successful: '.$log_body);
     }
 }
 
