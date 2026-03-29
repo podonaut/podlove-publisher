@@ -101,7 +101,7 @@ class Geo_Ip
         $tmpFile = \download_url(self::SOURCE_URL);
 
         if (is_wp_error($tmpFile)) {
-            exit($tmpFile->get_error_message());
+            return $tmpFile;
         }
 
         if (file_exists(self::TAR_NAME)) {
@@ -117,12 +117,14 @@ class Geo_Ip
             $phar = new \PharData($file->getPath());
             $phar->extractTo(self::get_upload_file_dir(), null, true);
             wp_delete_file($tmpFile);
-        } catch (Exception $e) {
-            exit($e->getMessage());
-        } catch (PharException $e) {
-            exit($e->getMessage());
+        } catch (\Exception $e) {
+            return new \WP_Error('podlove_geo_ip_update_failed', $e->getMessage());
+        } catch (\PharException $e) {
+            return new \WP_Error('podlove_geo_ip_update_failed', $e->getMessage());
         }
 
         self::enable_tracking();
+
+        return true;
     }
 }
