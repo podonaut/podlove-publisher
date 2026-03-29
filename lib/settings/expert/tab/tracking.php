@@ -344,15 +344,15 @@ class Tracking extends Tab
 					<?php echo $episode->full_title(); ?>
 				</p>
 				<h4><?php _e('Media File', 'podlove-podcasting-plugin-for-wordpress'); ?></h4>
-				<p>
+				<div>
 					<h5><?php _e('Actual Location', 'podlove-podcasting-plugin-for-wordpress'); ?></h5>
 					<code><?php echo $actual_url; ?></code>
-				</p>
-				<p>
+				</div>
+				<div>
 					<h5><?php _e('Public URL', 'podlove-podcasting-plugin-for-wordpress'); ?></h5>
 					<code><?php echo $public_url; ?></code>
-				</p>
-				<p>
+				</div>
+				<div>
 					<h5><?php _e('Validations', 'podlove-podcasting-plugin-for-wordpress'); ?></h5>
 					<ul>
 						<li>
@@ -397,7 +397,7 @@ class Tracking extends Tab
 							<?php } ?>
 						</li>
 					</ul>
-				</p>
+				</div>
 				<?php
             },
             // $page
