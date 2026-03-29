@@ -125,15 +125,27 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 = 4.4.0 =
 
-* new: "Recent Downloads" chart can now be added to the WordPress dashboard
+**Tracking & Analytics**
+
 * new: add download tracking support for Matomo (see Expert Settings > Tracking)
+* new: "Recent Downloads" chart can now be added to the WordPress dashboard
+* improve: reorganize tracking settings page
+
+**Auphonic**
+
 * new: Auphonic module now supports providing an API key in addition to the OAuth flow
 * new: Auphonic module now supports chapter images in the production
+* fix: switch Auphonic OAuth to the new `auth.podlove.org` service (OAuth in older Publisher versions will no longer work)
+
+**Platform & Integrations**
+
 * new: Codeberg support as contributor social service
-* new: repair tool detects missing permission to alter tables, which prevents some database migrations to run successfully
+* new: repair tool detects missing permission to alter tables, which prevents some database migrations from running successfully
 * new: add some situational notices that PLUS exists
-* fix: new OAuth service for Auphonic under auth.podlove.org, the old one disintegrated (OAuth in older versions of the Publisher will not work any more)
-* maintenance: update various javascript dependencies
+
+**Maintenance**
+
+* update various JavaScript dependencies
 
 = 4.3.5 =
 
