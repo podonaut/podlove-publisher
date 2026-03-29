@@ -17,6 +17,7 @@
 - DB quick query (read-only): `npx wp-env run cli -- wp db query "SELECT * FROM wp_options LIMIT 5;"`
 - Legacy JS dev: `cd js && npm install && npm run serve`.
 - Client dev: `cd client && npm install && npm run dev` (set `WORDPRESS_URL=...` for isolated dev).
+- Tool runtime: this repo defines tool versions in `mise.toml` (`php = 8.4`, `node = 25`). Prefer running PHP and other pinned tools through `mise`, for example `mise exec -- php -l path/to/file.php`, instead of assuming `php` is available on `PATH`.
 
 ## Coding Style & Naming Conventions
 - Indentation: 2 spaces (see `.editorconfig`), LF line endings, max line length 120.
@@ -37,3 +38,4 @@
 - Local WordPress uses `wp-env`; see `README.md` for ports and default credentials.
 - For release builds, use `make build` to generate a clean `dist/` directory.
 - Read-only database queries are allowed without asking for permission.
+- If a required runtime is missing from `PATH`, use `mise exec -- ...` from the repository root so commands run with the versions declared in `mise.toml`.
