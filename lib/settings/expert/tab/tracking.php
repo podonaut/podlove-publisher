@@ -327,7 +327,7 @@ class Tracking extends Tab
         \Podlove\Geo_Ip::register_updater_cron();
         ?>
 		<p class="description">
-			<?php _e('Maintenance actions are separate from settings. Use this section to manage the GeoLite database used for geolocation lookups.', 'podlove-podcasting-plugin-for-wordpress'); ?>
+			<?php _e('Use this section to manage the GeoLite database used for geolocation lookups.', 'podlove-podcasting-plugin-for-wordpress'); ?>
 		</p>
 
 		<?php if (!class_exists('PharData')) { ?>
