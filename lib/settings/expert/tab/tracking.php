@@ -192,75 +192,47 @@ class Tracking extends Tab
 
         add_settings_field(
             // $id
-            'podlove_setting_tracking_matomo_url',
+            'podlove_setting_tracking_matomo',
             // $title
             sprintf(
                 '<label for="mode">%s</label>',
-                __('Matomo Tracking URL', 'podlove-podcasting-plugin-for-wordpress')
+                __('Matomo', 'podlove-podcasting-plugin-for-wordpress')
             ),
             // $callback
             function () {
                 ?>
-        <div>
-          <input class="large-text" type="text" name="podlove_tracking[matomo_url]" value="<?php echo \Podlove\get_setting('tracking', 'matomo_url'); ?>" placeholder="https://your-subdomain.matomo.cloud/matomo.php" />
-        </div>
-        <div>
-        <?php
-                echo __('Matomo Tracking URL. Usually the path to <code>matomo.php</code> on your Matomo instance. Leave blank to deactivate Matomo reporting.', 'podlove-podcasting-plugin-for-wordpress'); ?>
-        </div>
-        <?php
-            },
-            // $page
-            Settings::$pagehook,
-            // $section
-            'podlove_settings_episode'
-        );
+				<div style="display: grid; gap: 12px;">
+					<div>
+						<label for="podlove_tracking_matomo_url"><strong><?php _e('Tracking URL', 'podlove-podcasting-plugin-for-wordpress'); ?></strong></label>
+						<div>
+							<input id="podlove_tracking_matomo_url" class="large-text" type="text" name="podlove_tracking[matomo_url]" value="<?php echo \Podlove\get_setting('tracking', 'matomo_url'); ?>" placeholder="https://your-subdomain.matomo.cloud/matomo.php" />
+						</div>
+						<p class="description">
+							<?php echo __('Usually the path to <code>matomo.php</code> on your Matomo instance. Leave blank to deactivate Matomo reporting.', 'podlove-podcasting-plugin-for-wordpress'); ?>
+						</p>
+					</div>
 
-        add_settings_field(
-            // $id
-            'podlove_setting_tracking_matomo_site_id',
-            // $title
-            sprintf(
-                '<label for="mode">%s</label>',
-                __('Matomo Site ID', 'podlove-podcasting-plugin-for-wordpress')
-            ),
-            // $callback
-            function () {
-                ?>
-        <div>
-          <input class="regular-text" type="text" name="podlove_tracking[matomo_site_id]" value="<?php echo \Podlove\get_setting('tracking', 'matomo_site_id'); ?>" />
-        </div>
-        <div>
-          <?php
-                echo __('The ID of the website you are tracking in Matomo.', 'podlove-podcasting-plugin-for-wordpress'); ?>
-        </div>
-        <?php
-            },
-            // $page
-            Settings::$pagehook,
-            // $section
-            'podlove_settings_episode'
-        );
+					<div>
+						<label for="podlove_tracking_matomo_site_id"><strong><?php _e('Site ID', 'podlove-podcasting-plugin-for-wordpress'); ?></strong></label>
+						<div>
+							<input id="podlove_tracking_matomo_site_id" class="regular-text" type="text" name="podlove_tracking[matomo_site_id]" value="<?php echo \Podlove\get_setting('tracking', 'matomo_site_id'); ?>" />
+						</div>
+						<p class="description">
+							<?php echo __('The ID of the website you are tracking in Matomo.', 'podlove-podcasting-plugin-for-wordpress'); ?>
+						</p>
+					</div>
 
-        add_settings_field(
-            // $id
-            'podlove_setting_tracking_matomo_token',
-            // $title
-            sprintf(
-                '<label for="mode">%s</label>',
-                __('Matomo Auth Token', 'podlove-podcasting-plugin-for-wordpress')
-            ),
-            // $callback
-            function () {
-                ?>
-        <div>
-          <input class="large-text" type="password" name="podlove_tracking[matomo_token]" value="<?php echo \Podlove\get_setting('tracking', 'matomo_token'); ?>" />
-        </div>
-        <div>
-          <?php
-                echo __('Matomo Auth Token (<code>token_auth</code>). Required to override visitor IP and User Agent. Leave blank if you don\'t have one, but tracking will be less accurate.', 'podlove-podcasting-plugin-for-wordpress'); ?>
-        </div>
-          <?php
+					<div>
+						<label for="podlove_tracking_matomo_token"><strong><?php _e('Auth Token', 'podlove-podcasting-plugin-for-wordpress'); ?></strong></label>
+						<div>
+							<input id="podlove_tracking_matomo_token" class="large-text" type="password" name="podlove_tracking[matomo_token]" value="<?php echo \Podlove\get_setting('tracking', 'matomo_token'); ?>" />
+						</div>
+						<p class="description">
+							<?php echo __('Matomo Auth Token (<code>token_auth</code>). Required to override visitor IP and User Agent. Leave blank if you don\'t have one, but tracking will be less accurate.', 'podlove-podcasting-plugin-for-wordpress'); ?>
+						</p>
+					</div>
+				</div>
+				<?php
             },
             // $page
             Settings::$pagehook,
