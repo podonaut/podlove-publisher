@@ -22,6 +22,7 @@
 ## Coding Style & Naming Conventions
 - Indentation: 2 spaces (see `.editorconfig`), LF line endings, max line length 120.
 - PHP formatting is enforced with PHP-CS-Fixer (`.php-cs-fixer.dist.php`).
+- Before completing a task, format any touched PHP files with the repo formatter. `make format` runs PHP-CS-Fixer for the whole repo; prefer the equivalent targeted command for only the files you changed, for example `mise exec -- vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix path/to/file.php --config .php-cs-fixer.dist.php`.
 - Use descriptive, WordPress-appropriate names for hooks and filters; keep filenames lowercase with underscores where applicable.
 
 ## Testing Guidelines
