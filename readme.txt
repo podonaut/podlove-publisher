@@ -19,10 +19,12 @@ Official Site: [podlove.org/podlove-podcast-publisher](https://podlove.org/podlo
 ### Getting Started Videos
 
 Starting fresh with Podlove Publisher:
-https://youtu.be/2UZrmPAcyrs
+
+https://www.youtube.com/watch?v=2UZrmPAcyrs
 
 Migrating an existing podcast to Podlove Publisher:
-https://youtu.be/s6jL6jk6hWk
+
+https://www.youtube.com/watch?v=s6jL6jk6hWk
 
 ### Compatible RSS Feeds
 
