@@ -32,6 +32,11 @@ class Analytics_Heartbeat extends \Podlove\Modules\Base
         }
     }
 
+    public function uninstall()
+    {
+        Heartbeat::destroy();
+    }
+
     public function check_analytics_status()
     {
         Heartbeat::build();

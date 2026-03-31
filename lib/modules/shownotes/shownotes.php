@@ -45,6 +45,11 @@ class Shownotes extends \Podlove\Modules\Base
         Entry::build();
     }
 
+    public function uninstall()
+    {
+        Entry::destroy();
+    }
+
     public function add_meta_box()
     {
         $post_id = get_the_ID();
