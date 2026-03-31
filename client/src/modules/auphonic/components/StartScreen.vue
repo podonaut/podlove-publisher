@@ -106,7 +106,7 @@ export default defineComponent({
   setup() {
     return {
       state: mapAppState({
-        preset: selectors.auphonic.preset,
+        presetId: selectors.auphonic.preset,
         presets: selectors.auphonic.presets,
         isInitializing: selectors.auphonic.isInitializing,
       }),
@@ -141,7 +141,7 @@ export default defineComponent({
 
   computed: {
     preset(): auphonic.Preset | null {
-      return this.state.preset
+      return this.state.presets?.find((preset: auphonic.Preset) => preset.uuid === this.state.presetId) ?? null
     },
     isInitializing(): boolean {
       return this.state.isInitializing

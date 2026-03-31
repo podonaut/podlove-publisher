@@ -138,7 +138,7 @@ export type State = {
   production: Production | null
   productions: Production[] | null
   presets: Preset[] | null
-  preset: Preset | null
+  preset: string | null
   services: Service[]
   service_files: object
   tracks: AudioTrack[]
@@ -431,7 +431,7 @@ export const reducer = handleActions(
       file_selections: [],
       current_file_selection: null,
     }),
-    [SET_PRESET]: (state: State, action: { payload: Preset | null }): State => ({
+    [SET_PRESET]: (state: State, action: { payload: string | null }): State => ({
       ...state,
       preset: action.payload,
     }),

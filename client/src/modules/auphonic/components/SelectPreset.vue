@@ -95,7 +95,7 @@ export default defineComponent({
     return {
       state: mapAppState({
         presets: selectors.auphonic.presets,
-        currentPreset: selectors.auphonic.preset,
+        currentPresetId: selectors.auphonic.preset,
       }),
       dispatch: injectAppDispatch(),
     }
@@ -127,8 +127,8 @@ export default defineComponent({
         })
     },
     currentPreset(): PresetWithSelectionData | null | undefined {
-      const currentPreset = this.state.currentPreset
-      return this.presets.find((p) => p.uuid === currentPreset?.uuid)
+      const currentPresetId = this.state.currentPresetId
+      return this.presets.find((preset) => preset.uuid === currentPresetId)
     },
   },
 })

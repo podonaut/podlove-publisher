@@ -125,6 +125,10 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 == Changelog ==
 
+= 4.4.1 =
+
+* fix: Auphonic preset selector shows preset label again
+
 = 4.4.0 =
 
 **Tracking & Analytics**
