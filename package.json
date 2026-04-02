@@ -8,7 +8,7 @@
     "wp-env": "wp-env",
     "wp-env:start": "wp-env start",
     "wp-env:stop": "wp-env stop",
-    "wp-env:logs": "wp-env logs --watch | rg -v \"GET /|POST /|OPTIONS \"",
+    "wp-env:logs": "npx wp-env run cli -- tail -f /var/www/html/wp-content/debug.log",
     "test": "wp-env run tests-cli --env-cwd=wp-content/plugins/podlove-podcasting-plugin-for-wordpress vendor/bin/phpunit --configuration=phpunit.xml.dist"
   }
 }

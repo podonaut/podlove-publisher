@@ -1,12 +1,15 @@
 {
-  "plugins": [
-    "."
-  ],
+  "plugins": ["."],
   "env": {
     "tests": {
       "mappings": {
         "wp-content/plugins/podlove-podcasting-plugin-for-wordpress": "."
       }
     }
+  },
+  "config": {
+    "WP_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "WP_DEBUG_DISPLAY": false
   }
 }
