@@ -49,7 +49,7 @@ make docker-install
 
 ## Testing
 
-Integration tests use the official WordPress PHPUnit setup via `wp-env`, which starts a Docker-based WordPress test environment.
+Integration tests use the official WordPress PHPUnit setup via `wp-env` with a dedicated isolated config.
 
 Prerequisites:
 - Docker is running
@@ -63,7 +63,7 @@ composer bin php-scoper install
 composer bin php-cs-fixer install
 composer prefix-dependencies
 npm install
-npm run wp-env:start
+npm run wp-env:test:start
 ```
 
 ## Local Development with wp-env
@@ -90,13 +90,35 @@ npx wp-env run cli -- wp option get siteurl
 
 Run integration tests:
 ```
+npm run wp-env:test:start
 npm run test
 ```
 
-If `wp-env run` fails with a missing docker-compose file, the environment was not created yet or was cleaned up. Recreate it with:
+Start the dedicated test environment:
+```
+npm run wp-env:test:start
+```
+
+Open:
+- Test site: http://localhost:8889
+
+Useful test commands:
+```
+npm run wp-env:test:stop
+npm run wp-env:test:destroy
+npm run wp-env:test:logs
+```
+
+If `wp-env run` fails with a missing docker-compose file, the environment was not created yet or was cleaned up. Recreate the relevant environment with:
 ```
 npx wp-env destroy
 npm run wp-env:start
+```
+
+For the test environment use:
+```
+npm run wp-env:test:destroy
+npm run wp-env:test:start
 ```
 
 ## Formatting Code

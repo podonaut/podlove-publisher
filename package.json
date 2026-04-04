@@ -9,6 +9,10 @@
     "wp-env:start": "wp-env start",
     "wp-env:stop": "wp-env stop",
     "wp-env:logs": "npx wp-env run cli -- tail -f /var/www/html/wp-content/debug.log",
-    "test": "wp-env run tests-cli --env-cwd=wp-content/plugins/podlove-podcasting-plugin-for-wordpress vendor/bin/phpunit --configuration=phpunit.xml.dist"
+    "wp-env:test:start": "wp-env start --config=.wp-env.test.json",
+    "wp-env:test:stop": "wp-env stop --config=.wp-env.test.json",
+    "wp-env:test:logs": "npx wp-env --config=.wp-env.test.json run cli -- tail -f /var/www/html/wp-content/debug.log",
+    "wp-env:test:destroy": "npx wp-env destroy --config=.wp-env.test.json",
+    "test": "wp-env --config=.wp-env.test.json run cli --env-cwd=wp-content/plugins/podlove-podcasting-plugin-for-wordpress vendor/bin/phpunit --configuration=phpunit.xml.dist"
   }
 }

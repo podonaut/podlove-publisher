@@ -1,6 +1,9 @@
 {
-  "plugins": ["."],
+  "port": 8889,
   "testsEnvironment": false,
+  "mappings": {
+    "wp-content/plugins/podlove-podcasting-plugin-for-wordpress": "."
+  },
   "config": {
     "WP_DEBUG": true,
     "WP_DEBUG_LOG": true,

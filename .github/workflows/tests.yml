@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.wp-env
-          key: ${{ runner.os }}-wp-env-${{ hashFiles('.wp-env.json') }}
+          key: ${{ runner.os }}-wp-env-${{ hashFiles('.wp-env.test.json') }}
 
       - name: Cache Composer
         uses: actions/cache@v4
@@ -48,8 +48,8 @@ jobs:
       - name: Install Node dependencies
         run: npm install
 
-      - name: Start wp-env
-        run: npm run wp-env:start
+      - name: Start wp-env test environment
+        run: npm run wp-env:test:start
 
       - name: Run integration tests
         run: npm run test

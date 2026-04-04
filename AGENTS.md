@@ -11,9 +11,11 @@
 ## Build, Test, and Development Commands
 - `make install`: installs PHP tooling and prefixed dependencies (uses PHP-Scoper).
 - `make format`: runs PHP-CS-Fixer to format PHP code.
-- `npm run wp-env:start`: starts a local WordPress test environment via `wp-env`.
-- `npm run wp-env:stop`: stops the `wp-env` environment.
-- `npm run test`: runs PHPUnit inside the `wp-env` container.
+- `npm run wp-env:start`: starts the local WordPress development environment on port 8888.
+- `npm run wp-env:stop`: stops the development `wp-env` environment.
+- `npm run wp-env:test:start`: starts the dedicated test `wp-env` environment on port 8889.
+- `npm run wp-env:test:stop`: stops the dedicated test environment.
+- `npm run test`: runs PHPUnit inside the dedicated test config's `cli` container (start it first).
 - DB quick query (read-only): `npx wp-env run cli -- wp db query "SELECT * FROM wp_options LIMIT 5;"`
 - Legacy JS dev: `cd js && npm install && npm run serve`.
 - Client dev: `cd client && npm install && npm run dev` (set `WORDPRESS_URL=...` for isolated dev).
@@ -28,7 +30,7 @@
 ## Testing Guidelines
 - PHPUnit is configured in `phpunit.xml.dist` and bootstraps via `tests/phpunit/bootstrap.php`.
 - Integration and REST tests live under `tests/phpunit/integration/` and `tests/phpunit/rest/`.
-- Run tests with `npm run test` after starting `wp-env`.
+- Run tests with `npm run wp-env:test:start` followed by `npm run test`.
 
 ## Commit & Pull Request Guidelines
 - Commit messages follow a lightweight conventional style (examples: `feat: ...`, `fix: ...`, `chore: ...`, `change: ...`).
