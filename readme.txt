@@ -3,7 +3,7 @@ Contributors: eteubert
 Donate link: https://opencollective.com/podlove
 Tags: podlove, podcast, publishing, rss, audio
 Tested up to: 6.9.4
-Stable tag: 4.4.1
+Stable tag: 4.4.2
 Requires at least: 4.9.6
 Requires PHP: 8.0
 License: MIT
@@ -125,9 +125,13 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 == Changelog ==
 
+= 4.4.2 =
+
+* fix: Related Episodes selector shows labels again (regression from 4.4.0)
+
 = 4.4.1 =
 
-* fix: Auphonic preset selector shows preset label again
+* fix: Auphonic preset selector shows preset label again (regression from 4.4.0)
 
 = 4.4.0 =
 
