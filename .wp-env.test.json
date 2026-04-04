@@ -4,6 +4,10 @@
   "mappings": {
     "wp-content/plugins/podlove-podcasting-plugin-for-wordpress": "."
   },
+  "lifecycleScripts": {
+    "afterStart": "node bin/wp-env-test-after-start.js",
+    "afterReset": "node bin/wp-env-test-after-start.js"
+  },
   "config": {
     "WP_DEBUG": true,
     "WP_DEBUG_LOG": true,
