@@ -8,6 +8,11 @@ import { PodloveEpisodeList } from '../types/relatedEpisodes.types'
 import { takeFirst } from './helper'
 import * as relatedEpisodesStore from '@store/relatedEpisodes.store'
 
+type EpisodeApiListItem = {
+  id: number
+  title: string
+}
+
 function* relatedEpisodesSaga(): any {
   const apiClient: PodloveApiClient = yield createApi()
 
@@ -20,14 +25,17 @@ function* initialize(api: PodloveApiClient) {
 
   const [relatedEpisodes, episodeList ]: [
     { result: Number[] },
-    { result: PodloveEpisodeList[] }
+    { result: EpisodeApiListItem[] }
   ] = yield Promise.all([
     api.get(`episodes/${episodeId}/related?status=all`),
     api.get('episodes?status=all&sort_by=post_id&order_by=asc')
   ])
 
   const related = get(relatedEpisodes, ['result', 'relatedEpisodes'], [])
-  const episodes = get(episodeList, ['result', 'results'], [])
+  const episodes = get(episodeList, ['result', 'results'], []).map((episode: EpisodeApiListItem) => ({
+    episode_id: episode.id,
+    episode_title: episode.title,
+  }))
 
   const arr = related.map( (r : any) => (r.related_episode_id))
 

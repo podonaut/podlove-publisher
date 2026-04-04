@@ -84,9 +84,7 @@ export default defineComponent({
     updateRelEpisodes(newSelectedItems: Array<Number>) {
       if (newSelectedItems.includes(0)) {
         // Select all
-        this.state.selectEpisodes = this.state.episodeList.map(function(item:any) {
-          return item.id
-        })
+        this.state.selectEpisodes = this.episodeOptions.map((item: RelatedOption) => item.id)
       }
       else if (newSelectedItems.includes(-1)) {
         // deselect all
@@ -101,7 +99,12 @@ export default defineComponent({
       const idx = this.state.selectEpisodes.findIndex( (elem: Number) => {
         return elem == removeId;
       })
+      if (idx === -1) {
+        return
+      }
+
       this.state.selectEpisodes.splice(idx, 1);
+      this.dispatch(related.setSelectedEpisodes([...this.state.selectEpisodes]))
     }
   }
 })
