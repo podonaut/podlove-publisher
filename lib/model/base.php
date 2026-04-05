@@ -495,7 +495,7 @@ abstract class Base
     public static function destroy()
     {
         global $wpdb;
-        $wpdb->query('DROP TABLE '.static::table_name());
+        $wpdb->query('DROP TABLE IF EXISTS '.static::table_name());
     }
 
     public static function delete_all($reset_autoincrement = true)

@@ -115,10 +115,23 @@ function uninstall()
             }
             switch_to_blog($current_blog);
         } else {
-            activate_for_current_blog();
+            uninstall_for_current_blog();
         }
     } else {
         uninstall_for_current_blog();
+    }
+}
+
+function uninstall_modules_for_current_blog()
+{
+    $modules = \Podlove\Modules\Base::get_all_module_names();
+
+    foreach ($modules as $module_name) {
+        $class = \Podlove\Modules\Base::get_class_by_module_name($module_name);
+
+        if (class_exists($class)) {
+            $class::instance()->uninstall();
+        }
     }
 }
 
@@ -127,6 +140,7 @@ function uninstall_for_current_blog()
     global $wpdb;
 
     \Podlove\Cache\TemplateCache::get_instance()->purge();
+    uninstall_modules_for_current_blog();
 
     Model\Feed::destroy();
     Model\FileType::destroy();
@@ -139,7 +153,9 @@ function uninstall_for_current_blog()
     Model\UserAgent::destroy();
     Model\GeoArea::destroy();
     Model\GeoAreaName::destroy();
+    Model\Job::destroy();
 
+    // Legacy hook for external integrations that still rely on it.
     do_action('podlove_uninstall_plugin');
 
     // trash all episodes

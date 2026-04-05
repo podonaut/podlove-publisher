@@ -58,6 +58,11 @@ class Seasons extends \Podlove\Modules\Base
         Season::build();
     }
 
+    public function uninstall()
+    {
+        Season::destroy();
+    }
+
     public function scripts_and_styles()
     {
         $is_seasons_settings_page = filter_input(INPUT_GET, 'page') === 'podlove_seasons_settings';

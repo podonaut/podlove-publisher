@@ -20,7 +20,6 @@ class Contributors extends \Podlove\Modules\Base
 
     public function load()
     {
-        add_action('podlove_uninstall_plugin', [$this, 'uninstall']);
         add_action('podlove_module_was_activated_contributors', [$this, 'was_activated']);
         add_filter('podlove_episode_form_data', [$this, 'contributors_form_for_episode'], 10, 2);
         add_action('save_post', [$this, 'update_contributors'], 10, 2);

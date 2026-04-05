@@ -35,6 +35,11 @@ class Related_Episodes extends \Podlove\Modules\Base
         Shortcodes::init();
     }
 
+    public function uninstall()
+    {
+        EpisodeRelation::destroy();
+    }
+
     public function was_activated($module_name)
     {
         EpisodeRelation::build();

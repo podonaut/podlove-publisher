@@ -98,6 +98,12 @@ class Transcripts extends \Podlove\Modules\Base
         return \Podlove\Template\TwigFilter::apply_to_html('@transcripts/transcript.twig', ['episode' => $episode]);
     }
 
+    public function uninstall()
+    {
+        Transcript::destroy();
+        VoiceAssignment::destroy();
+    }
+
     public function was_activated($module_name)
     {
         Transcript::build();

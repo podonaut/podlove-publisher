@@ -40,6 +40,13 @@ abstract class Base
     abstract public function load();
 
     /**
+     * This will be called when the plugin is uninstalled.
+     *
+     * Modules can override this to drop their own tables or remove persistent data.
+     */
+    public function uninstall() {}
+
+    /**
      * Fetch module names by iterating over module directories.
      *
      * @return array

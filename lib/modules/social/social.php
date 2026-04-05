@@ -76,6 +76,13 @@ class Social extends \Podlove\Modules\Base
         self::build_missing_services();
     }
 
+    public function uninstall()
+    {
+        Service::destroy();
+        ShowService::destroy();
+        ContributorService::destroy();
+    }
+
     public static function services_config()
     {
         $file = implode(

@@ -19,7 +19,6 @@ class Logging extends \Podlove\Modules\Base
 
     public function load()
     {
-        add_action('podlove_uninstall_plugin', [$this, 'uninstall']);
         add_action('podlove_module_was_activated_logging', [$this, 'was_activated']);
         add_action('init', [$this, 'register_database_logger']);
 

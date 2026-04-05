@@ -87,6 +87,13 @@ class Networks extends \Podlove\Modules\Base
         });
     }
 
+    public function uninstall()
+    {
+        PodcastList::with_network_scope(function () {
+            PodcastList::destroy();
+        });
+    }
+
     // Register Network Admin Menu
     public function create_network_menu()
     {
