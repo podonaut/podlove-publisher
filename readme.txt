@@ -128,6 +128,7 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 = 4.4.3 =
 
 * improve: episode contributor selection interface now uses whichever name is available, same logic as everywhere else (prefer public name, then real name, then nickname)
+* fix: uninstalling the plugin removes all database tables
 
 = 4.4.2 =
 
