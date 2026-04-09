@@ -125,6 +125,10 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 == Changelog ==
 
+= 4.4.3 =
+
+* improve: episode contributor selection interface now uses whichever name is available, same logic as everywhere else (prefer public name, then real name, then nickname)
+
 = 4.4.2 =
 
 * fix: Related Episodes selector shows labels again (regression from 4.4.0)

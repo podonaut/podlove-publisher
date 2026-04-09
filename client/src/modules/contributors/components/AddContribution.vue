@@ -51,7 +51,7 @@
                         class="h-6 w-6 flex-shrink-0 rounded-full text-gray-500"
                       />
                       <span :class="['ml-3 truncate', selected && 'font-semibold']">
-                        {{ contributor.realname }}
+                        {{ contributorName(contributor) }}
                       </span>
                     </div>
 
@@ -105,6 +105,19 @@ type ContributionOption = Omit<PodloveEpisodeContribution, 'id' | 'contributor_i
   id: string | number
   contributor_id: string | number
 }
+
+type CreateContributorOption = {
+  id: null
+  avatar_url: null
+  publicname?: string
+  realname: string
+  nickname?: string
+}
+
+type ContributorListOption = PodloveContributor | CreateContributorOption
+
+const getContributorName = (contributor?: Partial<ContributorListOption> | null) =>
+  contributor?.publicname || contributor?.realname || contributor?.nickname || ''
 
 export default defineComponent({
   data() {
@@ -167,7 +180,7 @@ export default defineComponent({
     Image,
   },
   computed: {
-    filteredContributors() {
+    filteredContributors(): ContributorListOption[] {
       return [
         ...(this.query.length > 0
           ? [
@@ -190,7 +203,7 @@ export default defineComponent({
           .filter(
             (contributor) =>
               !this.query ||
-              (contributor?.realname || '').toUpperCase().includes(this.query.toUpperCase())
+              getContributorName(contributor).toUpperCase().includes(this.query.toUpperCase())
           ),
       ]
     },
@@ -205,6 +218,9 @@ export default defineComponent({
     },
   },
   methods: {
+    contributorName(contributor: ContributorListOption) {
+      return getContributorName(contributor)
+    },
     filterContributors(event: Event) {
       this.query = get(event, ['target', 'value'], '')
     },
