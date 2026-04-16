@@ -129,11 +129,38 @@ class Plus extends \Podlove\Modules\Base
      */
     private function update_podcast_title_and_slug(string $guid, string $title)
     {
-        $response = $this->api->upsert_podcast_title($guid, $title);
-        if ($response && $response->slug) {
-            $podcast = Podcast::get();
-            $podcast->plus_slug = $response->slug;
-            $podcast->save();
+        static $sync_in_progress = false;
+
+        if ($sync_in_progress || trim($title) === '') {
+            return;
+        }
+
+        $sync_in_progress = true;
+
+        try {
+            if (trim($guid) === '') {
+                $podcast = Podcast::get();
+
+                if (!$podcast->guid) {
+                    $podcast->guid = \Ramsey\Uuid\Uuid::uuid4();
+                    $podcast->save();
+                }
+
+                $guid = (string) $podcast->guid;
+            }
+
+            if (trim($guid) === '') {
+                return;
+            }
+
+            $response = $this->api->upsert_podcast_title($guid, $title);
+            if ($response && $response->slug) {
+                $podcast = Podcast::get();
+                $podcast->plus_slug = $response->slug;
+                $podcast->save();
+            }
+        } finally {
+            $sync_in_progress = false;
         }
     }
 }
