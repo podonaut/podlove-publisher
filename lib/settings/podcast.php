@@ -63,12 +63,22 @@ class Podcast
 
     public function page()
     {
+        $podcast = \Podlove\Model\Podcast::get();
+        $guid = trim((string) $podcast->guid);
+
         ?>
 		<div class="wrap">
 
 			<?php
             echo $this->tabs->getTabsHTML();
         echo $this->tabs->getCurrentTabPage(); ?>
+
+			<?php if ($guid !== '') { ?>
+				<p class="description" style="margin-top: 1rem;">
+					<?php _e('Podcast GUID:', 'podlove-podcasting-plugin-for-wordpress'); ?>
+					<code><?php echo esc_html($guid); ?></code>
+				</p>
+			<?php } ?>
 			
 		</div>	
 		<?php
