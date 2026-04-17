@@ -334,9 +334,17 @@ class EpisodeAsset
         }
 
         $format_optionlist = array_map(function ($f) {
+            $is_default_transcript_format = $f['type'] === 'transcript' && $f['extension'] === 'vtt';
+
             return [
                 'value' => $f['title'],
-                'attributes' => 'data-type="'.$f['type'].'" data-extension="'.$f['extension'].'" data-name="'.$f['name'].'"',
+                'attributes' => sprintf(
+                    'data-type="%s" data-extension="%s" data-name="%s" data-default-for-type="%s"',
+                    esc_attr($f['type']),
+                    esc_attr($f['extension']),
+                    esc_attr($f['name']),
+                    $is_default_transcript_format ? 'transcript' : ''
+                ),
             ];
         }, $formats);
 

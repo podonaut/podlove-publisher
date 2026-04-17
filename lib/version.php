@@ -42,7 +42,7 @@ namespace Podlove;
 
 use Podlove\Jobs\CronJobRunner;
 
-define('Podlove\DATABASE_VERSION', 164);
+define('Podlove\DATABASE_VERSION', 165);
 
 add_action('admin_init', '\Podlove\maybe_run_database_migrations');
 add_action('admin_init', '\Podlove\run_database_migrations', 5);
@@ -1720,6 +1720,18 @@ function run_migrations_for_version($version)
                 Model\Feed::table_name()
             );
             \podlove_do_migration_query($sql);
+
+            break;
+        case 165:
+            $file_type = ['name' => 'WebVTT Captions', 'type' => 'transcript', 'mime_type' => 'text/vtt', 'extension' => 'vtt'];
+
+            if (!Model\FileType::find_one_by_where("`type` = 'transcript' AND `mime_type` = 'text/vtt'")) {
+                $f = new Model\FileType();
+                foreach ($file_type as $key => $value) {
+                    $f->{$key} = $value;
+                }
+                $f->save();
+            }
 
             break;
     }

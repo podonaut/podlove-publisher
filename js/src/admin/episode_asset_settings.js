@@ -55,11 +55,24 @@ var PODLOVE = PODLOVE || {};
 
 		function filter_file_formats_by_asset_type() {
 			$('select[name=podlove_episode_asset_type]', container).on('change', function() {
-				var $container = $(this).closest('table');
-			
-				$("#option_storage option").remove().appendTo($("#podlove_episode_asset_file_type_id"));
-				$("#podlove_episode_asset_file_type_id option[data-type!='" + $(this).val() + "']").remove().appendTo($("#option_storage"));
-				$('select[name*=file_type_id]').change();
+				var assetType = $(this).val();
+				var $fileTypeSelect = $("#podlove_episode_asset_file_type_id");
+				var selectedValue = $fileTypeSelect.val();
+
+				$("#option_storage option").remove().appendTo($fileTypeSelect);
+				$fileTypeSelect.find("option[data-type!='" + assetType + "']").remove().appendTo($("#option_storage"));
+
+				if (!$fileTypeSelect.find("option[value='" + selectedValue + "']").length) {
+					var $preferredOption = $fileTypeSelect.find("option[data-default-for-type='" + assetType + "']").first();
+
+					if (!$preferredOption.length) {
+						$preferredOption = $fileTypeSelect.find("option").first();
+					}
+
+					$fileTypeSelect.val($preferredOption.val());
+				}
+
+				$fileTypeSelect.change();
 			}).change();
 		}
 

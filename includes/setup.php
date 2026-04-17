@@ -55,6 +55,7 @@ function podlove_setup_file_types()
         ['name' => 'Podlove Simple Chapters', 'type' => 'chapters', 'mime_type' => 'application/xml', 'extension' => 'psc'],
         ['name' => 'Subrip Captions', 'type' => 'captions', 'mime_type' => 'application/x-subrip', 'extension' => 'srt'],
         ['name' => 'WebVTT Captions', 'type' => 'captions', 'mime_type' => 'text/vtt', 'extension' => 'vtt'],
+        ['name' => 'WebVTT Captions', 'type' => 'transcript', 'mime_type' => 'text/vtt', 'extension' => 'vtt'],
         ['name' => 'Auphonic Production Description', 'type' => 'metadata', 'mime_type' => 'application/json', 'extension' => 'json'],
         ['name' => 'Podigee Transcript', 'type' => 'transcript', 'mime_type' => 'plain/text', 'extension' => 'txt'],
     ];
