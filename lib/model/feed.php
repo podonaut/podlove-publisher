@@ -345,6 +345,7 @@ Feed::property('enable', 'INT');
 Feed::property('discoverable', 'INT');
 Feed::property('limit_items', 'INT');
 Feed::property('embed_content_encoded', 'INT');
+Feed::property('optimize_content_encoded_html', 'TINYINT(1)');
 Feed::property('append_name_to_podcast_title', 'TINYINT(1)');
 Feed::property('protected', 'TINYINT(1)');
 Feed::property('protection_type', 'TINYINT(1)'); // Protection type: 0: local, 1: WordPress User

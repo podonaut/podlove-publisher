@@ -442,6 +442,12 @@ class Feed
                 'default' => true,
             ]);
 
+            $wrapper->checkbox('optimize_content_encoded_html', [
+                'label' => __('Optimize HTML Content', 'podlove-podcasting-plugin-for-wordpress'),
+                'description' => __('Reduce feed HTML size by stripping non-essential attributes from episode show notes.', 'podlove-podcasting-plugin-for-wordpress'),
+                'default' => false,
+            ]);
+
             $podcast_settings = get_option('podlove_podcast');
             if ($podcast_settings['limit_items'] < 0) {
                 $limit_default = 'No limit';

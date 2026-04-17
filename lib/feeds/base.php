@@ -81,6 +81,43 @@ function prepare_for_feed($content)
     return trim(htmlspecialchars($content));
 }
 
+function strip_style_tags_from_feed_content($content)
+{
+    return preg_replace('#<style(.*?)>(.*?)</style>#is', '', $content);
+}
+
+function get_optimized_content_encoded_allowed_html()
+{
+    $allowed_html = wp_kses_allowed_html('post');
+    $allowed_html = array_map(function () {
+        return [];
+    }, $allowed_html);
+
+    $allowed_html['a'] = ['href' => true];
+    $allowed_html['blockquote'] = ['cite' => true];
+    $allowed_html['img'] = [
+        'alt' => true,
+        'height' => true,
+        'src' => true,
+        'title' => true,
+        'width' => true,
+    ];
+    $allowed_html['q'] = ['cite' => true];
+
+    return apply_filters('podlove_feed_optimized_content_encoded_allowed_html', $allowed_html);
+}
+
+function prepare_content_encoded($content, $optimize = false)
+{
+    $content = strip_style_tags_from_feed_content($content);
+
+    if (!$optimize) {
+        return $content;
+    }
+
+    return wp_kses($content, get_optimized_content_encoded_allowed_html());
+}
+
 function get_xml_text_node($tag_name, $content)
 {
     $doc = new \DOMDocument();
@@ -447,10 +484,11 @@ function override_feed_entry($hook, $podcast, $feed, $format)
             $xml .= $tag_prefix.apply_filters('podlove_feed_episode_itunes_image', $cover_art);
 
             if ($feed->embed_content_encoded) {
-                add_filter('the_content_feed', function ($content, $feed_type) {
-                    return preg_replace('#<style(.*?)>(.*?)</style>#is', '', $content);
-                }, 10, 2);
-                $content_encoded = get_xml_cdata_node('content:encoded', get_the_content_feed('rss2'));
+                $content_encoded = prepare_content_encoded(
+                    get_the_content_feed('rss2'),
+                    (bool) $feed->optimize_content_encoded_html
+                );
+                $content_encoded = get_xml_cdata_node('content:encoded', $content_encoded);
                 $xml .= $tag_prefix.apply_filters('podlove_feed_content_encoded', $content_encoded);
             }
 
