@@ -128,6 +128,7 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 = 4.5.0
 
 * new: "Optimize HTML Content" in feed settings strips non-essential attributes from episode shownotes in the RSS feed
+* new: show podcast guid in podcast settings
 * fix: transcription format "VTT" can now be found under "transcript" type, not just "caption"
 
 Note: This release includes a database migration that adds a table column.
