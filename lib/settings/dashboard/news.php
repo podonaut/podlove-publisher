@@ -4,6 +4,7 @@ namespace Podlove\Settings\Dashboard;
 
 class News
 {
+    // FIXME: https://podlove.org/feed/ is currently broken
     public static function content()
     {
         $feeds = [

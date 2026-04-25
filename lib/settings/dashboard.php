@@ -34,7 +34,7 @@ class Dashboard
             add_action('add_meta_boxes_'.Dashboard::$pagehook, function () {
                 add_meta_box(Dashboard::$pagehook.'_about', __('About', 'podlove-podcasting-plugin-for-wordpress'), '\Podlove\Settings\Dashboard\About::content', Dashboard::$pagehook, 'side');
                 add_meta_box(Dashboard::$pagehook.'_statistics', __('At a glance', 'podlove-podcasting-plugin-for-wordpress'), '\Podlove\Settings\Dashboard\Statistics::content', Dashboard::$pagehook, 'normal');
-                add_meta_box(Dashboard::$pagehook.'_news', __('Podlove News', 'podlove-podcasting-plugin-for-wordpress'), '\Podlove\Settings\Dashboard\News::content', Dashboard::$pagehook, 'normal');
+                // add_meta_box(Dashboard::$pagehook.'_news', __('Podlove News', 'podlove-podcasting-plugin-for-wordpress'), '\Podlove\Settings\Dashboard\News::content', Dashboard::$pagehook, 'normal');
 
                 do_action('podlove_dashboard_meta_boxes');
 
