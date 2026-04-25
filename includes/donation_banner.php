@@ -1,7 +1,8 @@
 <?php
 
-add_action('admin_notices', 'podlove_donation_banner');
-add_action('wp_ajax_podlove-hide-donation-banner', 'podlove_donation_banner_hide');
+// FEATURE DISABLED. uncomment following two lines to enable it.
+// add_action('admin_notices', 'podlove_donation_banner');
+// add_action('wp_ajax_podlove-hide-donation-banner', 'podlove_donation_banner_hide');
 
 define('PODLOVE_DONATION_BANNER_OPTION_KEY', '_podlove_hide_donation_banner');
 define('PODLOVE_DONATION_BANNER_MIN_EPISODES', 5);
