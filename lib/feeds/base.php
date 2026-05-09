@@ -413,7 +413,7 @@ function override_feed_entry($hook, $podcast, $feed, $format)
             $enclosure_file_size = $file->size;
 
             $cover_art_url = '';
-            if ($cover_art = $episode->cover_art()) {
+            if ($cover_art = apply_filters('podlove_feed_episode_cover_art', $episode->cover_art(), $episode, $feed, $podcast)) {
                 $cover_art_url = $cover_art->url();
             }
 

@@ -45,6 +45,58 @@ class Show
         $this->guid = '';
     }
 
+    public static function meta_data_fields()
+    {
+        return ['subtitle', 'language', 'image', 'category', 'auphonic_preset'];
+    }
+
+    public static function create($attributes = [])
+    {
+        $attributes = wp_parse_args($attributes, [
+            'title' => '',
+            'slug' => '',
+            'summary' => '',
+            'subtitle' => '',
+            'language' => '',
+            'image' => '',
+            'category' => '',
+            'auphonic_preset' => '',
+            'guid' => '',
+        ]);
+
+        $term = wp_insert_term($attributes['title'], 'shows', [
+            'description' => $attributes['summary'],
+            'slug' => $attributes['slug'],
+        ]);
+
+        if (is_wp_error($term)) {
+            return null;
+        }
+
+        foreach (self::meta_data_fields() as $field) {
+            add_term_meta($term['term_id'], $field, $attributes[$field]);
+        }
+
+        if ($attributes['guid']) {
+            update_term_meta($term['term_id'], 'guid', $attributes['guid']);
+        } else {
+            self::generate_guid($term['term_id']);
+        }
+
+        return self::find_by_id($term['term_id']);
+    }
+
+    public function delete()
+    {
+        foreach (self::meta_data_fields() as $field) {
+            delete_term_meta($this->id, $field);
+        }
+
+        delete_term_meta($this->id, 'guid');
+
+        return wp_delete_term($this->id, 'shows');
+    }
+
     /**
      * Searches all Show terms and returns all values matching $property == $value.
      *

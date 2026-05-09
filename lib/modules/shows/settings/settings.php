@@ -36,7 +36,7 @@ class Settings
 
     public static function show_meta_data_fields()
     {
-        return ['subtitle', 'language', 'image', 'category', 'auphonic_preset'];
+        return Show::meta_data_fields();
     }
 
     public function add_screen_options()
@@ -148,6 +148,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'confirm_delete') {
             return;
         }
 
+        // TODO: Use the Shows model instead of low-level term APIs for create/update/delete operations.
         $updated_term = wp_update_term(
             $_REQUEST['show'],
             'shows',

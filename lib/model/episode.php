@@ -287,7 +287,9 @@ class Episode extends Base implements Licensable
     public function cover_art_with_fallback()
     {
         return $this->with_blog_scope(function () {
-            if (!$image = $this->cover_art()) {
+            $image = apply_filters('podlove_episode_cover_art_with_fallback', $this->cover_art(), $this);
+
+            if (!$image) {
                 $image = Podcast::get()->cover_art();
             }
 

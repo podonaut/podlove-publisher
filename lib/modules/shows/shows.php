@@ -29,6 +29,8 @@ class Shows extends \Podlove\Modules\Base
         add_filter('podlove_rss_feed_description', [$this, 'override_feed_description'], 20);
         add_filter('podlove_feed_itunes_image', [$this, 'override_feed_image'], 5);
         add_filter('podlove_feed_itunes_image_url', [$this, 'override_feed_image_url'], 5);
+        add_filter('podlove_feed_episode_cover_art', [$this, 'add_feed_episode_cover_art_fallback'], 10, 4);
+        add_filter('podlove_episode_cover_art_with_fallback', [$this, 'add_episode_cover_art_fallback'], 10, 2);
         add_filter('podlove_feed_language', [$this, 'override_feed_language'], 5);
         add_filter('podlove_feed_itunes_category_id', [$this, 'override_feed_category'], 5);
 
@@ -227,6 +229,32 @@ class Shows extends \Podlove\Modules\Base
     public function override_feed_image_url($url)
     {
         return self::get_feed_modification($url, 'image_url');
+    }
+
+    public function add_feed_episode_cover_art_fallback($cover_art, $episode, $feed, $podcast)
+    {
+        $cover_art = $this->add_episode_cover_art_fallback($cover_art, $episode);
+
+        if (!$cover_art) {
+            $cover_art = $podcast->cover_art();
+        }
+
+        return $cover_art;
+    }
+
+    public function add_episode_cover_art_fallback($cover_art, $episode)
+    {
+        if ($cover_art) {
+            return $cover_art;
+        }
+
+        $show = Show::find_one_by_post_id($episode->post_id);
+
+        if ($show && $show->image) {
+            return $show->image();
+        }
+
+        return $cover_art;
     }
 
     public function override_feed_language($language)

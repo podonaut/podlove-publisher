@@ -129,14 +129,12 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 * new: "Optimize HTML Content" in feed settings strips non-essential attributes from episode shownotes in the RSS feed
 * new: show podcast guid in podcast settings
+* new: use the show cover as episode image fallback before the podcast cover
+* improve: episode contributor selection interface now uses whichever name is available, same logic as everywhere else (prefer public name, then real name, then nickname)
 * fix: transcription format "VTT" can now be found under "transcript" type, not just "caption"
+* fix: uninstalling the plugin removes all database tables
 
 Note: This release includes a database migration that adds a table column.
-
-= 4.4.3 =
-
-* improve: episode contributor selection interface now uses whichever name is available, same logic as everywhere else (prefer public name, then real name, then nickname)
-* fix: uninstalling the plugin removes all database tables
 
 = 4.4.2 =
 
