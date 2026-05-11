@@ -28,6 +28,12 @@ class EpisodeFactory
 
         $existing = \Podlove\Model\Episode::find_one_by_property('post_id', $args['post_id']);
         if ($existing) {
+            $args = array_merge($this->defaults, $args);
+            foreach ($args as $key => $value) {
+                $existing->{$key} = $value;
+            }
+            $existing->save();
+
             return $existing;
         }
 

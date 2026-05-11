@@ -30,7 +30,12 @@
 ## Testing Guidelines
 - PHPUnit is configured in `phpunit.xml.dist` and bootstraps via `tests/phpunit/bootstrap.php`.
 - Integration and REST tests live under `tests/phpunit/integration/` and `tests/phpunit/rest/`.
+- `npm run test` expects Composer dev dependencies to be installed locally because `wp-env` mounts this checkout into the `cli` container and runs `vendor/bin/phpunit` from the mounted plugin directory.
+- Before running tests in a fresh or suspect checkout, run `composer install` (without `--no-dev`) and verify `vendor/bin/phpunit` exists.
 - Run tests with `npm run wp-env:test:start` followed by `npm run test`.
+- If `npm run test` fails with `service "cli" is not running`, start the dedicated test environment with `npm run wp-env:test:start`.
+- If it fails with `stat vendor/bin/phpunit: no such file or directory`, Composer dev dependencies are missing; run `composer install`.
+- If WordPress fails during `wp-env:test:start` with Composer autoload errors for files under `vendor/...`, the vendor tree may be a partial install. Run `composer install`, then repair any empty package directories with targeted `composer reinstall vendor/package` commands. For example, an empty `vendor/twig/twig` can be fixed with `composer reinstall twig/twig`.
 
 ## Commit & Pull Request Guidelines
 - Commit messages follow a lightweight conventional style (examples: `feat: ...`, `fix: ...`, `chore: ...`, `change: ...`).

@@ -34,17 +34,17 @@ class FileController
         $result['file_url'] = $file->get_file_url();
         $result['active'] = (bool) $file->active;
         $result['file_id'] = $file_id;
-        $result['reachable'] = podlove_is_resolved_and_reachable_http_status($info['http_code']);
+        $result['reachable'] = $info['reachable'] ?? podlove_is_resolved_and_reachable_http_status($info['http_code']);
         $result['file_size'] = $file->size;
         $result['file_size_human'] = number_format_i18n($file->size);
 
-        if (!$result['reachable']) {
-            $info['certinfo'] = print_r($info['certinfo'], true);
+        if (!$result['reachable'] || !$file->is_valid()) {
+            $info['certinfo'] = print_r($info['certinfo'] ?? [], true);
             $info['php_open_basedir'] = ini_get('open_basedir');
             $info['php_curl'] = in_array('curl', get_loaded_extensions());
             $info['curl_exec'] = function_exists('curl_exec');
 
-            \Podlove\Log::get()->addError("Can't reach {$file->get_file_url()}", $info);
+            \Podlove\Log::get()->addError("Can't verify {$file->get_file_url()}", $info);
         } else {
             do_action('podlove_media_file_content_verified', $file->id);
         }

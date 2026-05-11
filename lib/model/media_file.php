@@ -3,6 +3,9 @@
 namespace Podlove\Model;
 
 use Podlove\Log;
+use Podlove\Model\Probe\HttpMediaFileProbe;
+use Podlove\Model\Probe\MediaFileProber;
+use Podlove\Model\Probe\MediaFileProbeResult;
 
 class MediaFile extends Base
 {
@@ -292,46 +295,28 @@ class MediaFile extends Base
     }
 
     /**
-     * Determine file size by reading the HTTP Header of the file url.
+     * Determine file size by probing the media file URL.
      */
     public function determine_file_size()
     {
-        $header = $this->curl_get_header();
+        $probe = $this->probe_file();
+        $this->validate_file_probe($probe);
+        $this->update_file_size_from_probe($probe);
 
-        $http_code = (int) $header['http_code'];
-        // do not change the filesize if http_code = 0
-        // aka "an error occured I don't know how to deal with" (probably timeout)
-        // => change to proper handling once "Conflicts" are introduced
-        if (podlove_is_resolved_and_reachable_http_status($http_code) && $http_code !== 304) {
-            if (isset($header['download_content_length']) && $header['download_content_length'] > 0) {
-                $this->size = $header['download_content_length'];
-            } else {
-                // We know that the file exists but have no way of determining its size.
-                // Having a proper state would be nice, but this "size = 1 byte" hack works for now.
-                $this->size = 1;
-            }
-        } elseif ($http_code >= 400) {
-            $this->size = 0;
-        }
-
-        if ($this->size <= 0) {
-            $this->etag = null;
-        }
-
-        return $header;
+        return $probe->to_legacy_header();
     }
 
     /**
-     * Retrieve header data via curl.
+     * Retrieve header data for the media file URL.
      *
      * @return array
      */
     public function curl_get_header()
     {
-        $response = self::curl_get_header_for_url($this->get_file_url(), $this->etag);
-        $this->validate_request($response);
+        $probe = $this->probe_file();
+        $this->validate_file_probe($probe);
 
-        return $response['header'];
+        return $probe->to_legacy_header();
     }
 
     /**
@@ -344,117 +329,118 @@ class MediaFile extends Base
      */
     public static function curl_get_header_for_url($url, $etag = null)
     {
-        if (!function_exists('curl_exec')) {
-            return [];
+        return HttpMediaFileProbe::get_header_for_url($url, $etag);
+    }
+
+    private function probe_file()
+    {
+        return MediaFileProber::probe($this->get_file_url(), $this->etag, $this);
+    }
+
+    private function update_file_size_from_probe($probe)
+    {
+        if ($probe->unchanged()) {
+            return;
         }
 
-        $curl = curl_init();
-
-        if (\Podlove\Http\Curl::curl_can_follow_redirects()) {
-            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true); // follow redirects
-            curl_setopt($curl, CURLOPT_MAXREDIRS, 5);         // maximum number of redirects
-        } else {
-            $url = \Podlove\Http\Curl::resolve_redirects($url, 5);
+        if ($probe->reachable()) {
+            if ($probe->size() > 0) {
+                $this->size = $probe->size();
+            } elseif ($probe->source() === MediaFileProbeResult::SOURCE_HTTP) {
+                // HTTP confirmed the file exists but did not provide a usable size.
+                // Having a proper state would be nice, but this "size = 1 byte" hack works for now.
+                $this->size = 1;
+            } else {
+                $this->size = 0;
+            }
+        } elseif ($probe->source() === MediaFileProbeResult::SOURCE_LOCAL || $probe->status_code() >= 400) {
+            $this->size = 0;
         }
 
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // make curl_exec() return the result
-        curl_setopt($curl, CURLOPT_HEADER, true);         // header only
-        curl_setopt($curl, CURLOPT_NOBODY, true);         // return no body; HTTP request method: HEAD
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, \Podlove\get_setting('website', 'ssl_verify_peer') == 'on'); // Don't check SSL certificate in order to be able to use self signed certificates
-        curl_setopt($curl, CURLOPT_FAILONERROR, true);
-        curl_setopt($curl, CURLOPT_TIMEOUT, 3);          // HEAD requests shouldn't take > 2 seconds
-
-        if ($etag) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'If-None-Match: "'.$etag.'"',
-            ]);
+        if ($this->size <= 0) {
+            $this->etag = null;
         }
-
-        curl_setopt($curl, CURLOPT_USERAGENT, \Podlove\Http\Curl::user_agent());
-
-        $response = curl_exec($curl);
-        $response_header = curl_getinfo($curl);
-        $error = curl_error($curl);
-        curl_close($curl);
-
-        return [
-            'header' => $response_header,
-            'response' => $response,
-            'error' => $error,
-        ];
     }
 
     /**
-     * Validate media file headers.
+     * Validate media file probe result.
      *
      * @todo  $this->id not available for first validation before media_file has been saved
      *
-     * @param array $response curl response
+     * @param MediaFileProbeResult $probe
      */
-    private function validate_request($response)
+    private function validate_file_probe($probe)
     {
         // skip unsaved media files
         if (!$this->id) {
             return;
         }
 
-        $header = $response['header'];
-
-        if ($response['error']) {
+        if ($probe->source() === MediaFileProbeResult::SOURCE_HTTP && $probe->error()) {
             Log::get()->addError(
-                'Curl Error: '.$response['error'],
+                'Curl Error: '.$probe->error(),
                 [
                     'media_file_id' => $this->id,
-                    'header' => $header
+                    'probe' => $probe->to_legacy_header()
                 ]
             );
         }
 
         // skip validation if ETag did not change
-        if ((int) $header['http_code'] === 304) {
+        if ($probe->unchanged()) {
             return;
         }
 
-        // look for ETag and safe for later
-        if (podlove_is_resolved_and_reachable_http_status($header['http_code']) && preg_match('/ETag:\s*"([^"]+)"/i', $response['response'], $matches)) {
-            $this->etag = $matches[1];
-        } else {
-            $this->etag = null;
-        }
+        $this->etag = $probe->etag();
 
         do_action('podlove_media_file_content_has_changed', $this->id);
 
-        // verify HTTP header
-        if (!preg_match('/^[23]\d\d$/', $header['http_code'])) {
-            Log::get()->addError(
-                'Unexpected http response when trying to access remote media file.',
-                ['media_file_id' => $this->id, 'http_code' => $header['http_code']]
-            );
+        if (!$probe->reachable()) {
+            if ($probe->source() === MediaFileProbeResult::SOURCE_LOCAL) {
+                Log::get()->addError(
+                    'Local media file could not be verified.',
+                    [
+                        'media_file_id' => $this->id,
+                        'path' => $probe->path(),
+                        'exists' => $probe->exists(),
+                        'readable' => $probe->readable(),
+                        'url' => $probe->public_url()
+                    ]
+                );
+            } else {
+                Log::get()->addError(
+                    'Unexpected http response when trying to access remote media file.',
+                    ['media_file_id' => $this->id, 'http_code' => $probe->status_code()]
+                );
+            }
 
             return;
         }
 
-        // check that content length exists and hasn't changed
-        if (!isset($header['download_content_length']) || $header['download_content_length'] <= 0) {
-            $mime_type = $this->episode_asset()->file_type()->mime_type;
+        $mime_type = $this->episode_asset()->file_type()->mime_type;
+
+        if ($probe->size() === null) {
             Log::get()->addWarning(
                 'Unable to read "Content-Length" header. Impossible to determine file size.',
-                ['media_file_id' => $this->id, 'mime_type' => $header['content_type'], 'expected_mime_type' => $mime_type]
+                ['media_file_id' => $this->id, 'mime_type' => $probe->mime_type(), 'expected_mime_type' => $mime_type]
             );
-        } elseif ($header['download_content_length'] != $this->size) {
+        } elseif ($probe->size() <= 0) {
+            Log::get()->addWarning(
+                'Media file size is zero bytes.',
+                ['media_file_id' => $this->id, 'mime_type' => $probe->mime_type(), 'expected_mime_type' => $mime_type]
+            );
+        } elseif ($probe->size() != $this->size) {
             Log::get()->addInfo(
                 'Change of media file content length detected.',
-                ['media_file_id' => $this->id, 'old_size' => $this->size, 'new_size' => $header['download_content_length']]
+                ['media_file_id' => $this->id, 'old_size' => $this->size, 'new_size' => $probe->size()]
             );
         }
 
         // check if mime type matches asset mime type
-        $mime_type = $this->episode_asset()->file_type()->mime_type;
-        if ($header['content_type'] != $mime_type) {
+        if ($probe->mime_type() != $mime_type) {
             Log::get()->addWarning(
                 'Media file mime type does not match expected asset mime type.',
-                ['media_file_id' => $this->id, 'mime_type' => $header['content_type'], 'expected_mime_type' => $mime_type]
+                ['media_file_id' => $this->id, 'mime_type' => $probe->mime_type(), 'expected_mime_type' => $mime_type]
             );
         }
     }
