@@ -16,7 +16,9 @@ import axios, { AxiosResponse } from 'axios'
 import { Channel } from 'redux-saga'
 
 export function* selectMediaFromLibrary() {
-  yield put(wordpress.selectMediaFromLibrary({ onSuccess: { type: mediafiles.SET_UPLOAD_URL } }))
+  yield put(
+    wordpress.selectMediaFromLibrary({ onSuccess: { type: mediafiles.SET_WORDPRESS_UPLOAD_URL } })
+  )
 }
 
 /**
@@ -122,17 +124,45 @@ function* handleProgressUpdate(value: ProgressPayload) {
 
 export function* setUploadMedia(api: PodloveApiClient, action: Action) {
   const url = get(action, ['payload'])
-  const slug = url.split('\\').pop().split('/').pop().split('.').shift()
+  const slug = getSlugFromUrl(url)
   const currentSlug: string = yield select(selectors.episode.slug)
 
   if (!currentSlug) {
     yield put(episode.update({ prop: 'slug', value: slug }))
     yield put(episode.quicksave())
-  } else {
-    // If slug is already set, verify the media files, which is otherwise a side
-    // effect of saving the episode
+  } else if (slug === currentSlug) {
     yield call(verifyAll, api)
   }
+}
+
+export function* useUploadAsSlug() {
+  const url: string | null = yield select(selectors.mediafiles.wordpressUploadUrl)
+  const slugFrozen: boolean = yield select(selectors.episode.slugFrozen)
+
+  if (!url || slugFrozen) {
+    return
+  }
+
+  const slug = getSlugFromUrl(url)
+
+  if (!slug) {
+    return
+  }
+
+  yield put(episode.update({ prop: 'slug', value: slug }))
+  yield put(mediafiles.disableSlugAutogen())
+  yield put(episode.quicksave())
+}
+
+export function* keepCurrentSlug(api: PodloveApiClient) {
+  yield call(verifyAll, api)
+  yield put(mediafiles.clearUploadUrl())
+}
+
+function getSlugFromUrl(url: string): string {
+  const filename = url.split('?')[0].split('\\').pop()?.split('/').pop() || ''
+
+  return decodeURIComponent(filename.split('.').slice(0, -1).join('.'))
 }
 
 // Import verifyAll from verification saga

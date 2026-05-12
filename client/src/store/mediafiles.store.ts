@@ -21,6 +21,7 @@ export type State = {
   slug_autogeneration_enabled: boolean
   files: MediaFile[]
   selectedFiles: FileInfo[]
+  wordpress_upload_url: string | null
 }
 
 export const initialState: State = {
@@ -28,6 +29,7 @@ export const initialState: State = {
   slug_autogeneration_enabled: false,
   files: [],
   selectedFiles: [],
+  wordpress_upload_url: null,
 }
 
 export const INIT = 'podlove/publisher/mediafiles/INIT'
@@ -41,6 +43,10 @@ export const VERIFY_ALL = 'podlove/publisher/mediafiles/VERIFY_ALL'
 export const UPLOAD_INTENT = 'podlove/publisher/mediafiles/UPLOAD_INTENT'
 export const PLUS_UPLOAD_INTENT = 'podlove/publisher/mediafiles/PLUS_UPLOAD_INTENT'
 export const SET_UPLOAD_URL = 'podlove/publisher/mediafiles/SET_UPLOAD_URL'
+export const SET_WORDPRESS_UPLOAD_URL = 'podlove/publisher/mediafiles/SET_WORDPRESS_UPLOAD_URL'
+export const CLEAR_UPLOAD_URL = 'podlove/publisher/mediafiles/CLEAR_UPLOAD_URL'
+export const USE_UPLOAD_AS_SLUG = 'podlove/publisher/mediafiles/USE_UPLOAD_AS_SLUG'
+export const KEEP_UPLOAD_SLUG = 'podlove/publisher/mediafiles/KEEP_UPLOAD_SLUG'
 export const ENABLE_SLUG_AUTOGEN = 'podlove/publisher/mediafiles/ENABLE_SLUG_AUTOGEN'
 export const DISABLE_SLUG_AUTOGEN = 'podlove/publisher/mediafiles/DISABLE_SLUG_AUTOGEN'
 export const FILE_SELECTED = 'podlove/publisher/mediafiles/FILE_SELECTED'
@@ -60,6 +66,10 @@ export const verifyAll = createAction<void>(VERIFY_ALL)
 export const uploadIntent = createAction<void>(UPLOAD_INTENT)
 export const plusUploadIntent = createAction<File | null>(PLUS_UPLOAD_INTENT)
 export const setUploadUrl = createAction<string>(SET_UPLOAD_URL)
+export const setWordpressUploadUrl = createAction<string>(SET_WORDPRESS_UPLOAD_URL)
+export const clearUploadUrl = createAction<void>(CLEAR_UPLOAD_URL)
+export const useUploadAsSlug = createAction<void>(USE_UPLOAD_AS_SLUG)
+export const keepUploadSlug = createAction<void>(KEEP_UPLOAD_SLUG)
 export const enableSlugAutogen = createAction<void>(ENABLE_SLUG_AUTOGEN)
 export const disableSlugAutogen = createAction<void>(DISABLE_SLUG_AUTOGEN)
 export const fileSelected = (files: File[], episodeSlug: string | null) => ({
@@ -81,6 +91,17 @@ export const reducer = handleActions(
     [SET]: (state: State, action: { type: string; payload: MediaFile[] }): State => ({
       ...state,
       files: action.payload,
+    }),
+    [SET_WORDPRESS_UPLOAD_URL]: (
+      state: State,
+      action: { type: string; payload: string }
+    ): State => ({
+      ...state,
+      wordpress_upload_url: action.payload,
+    }),
+    [CLEAR_UPLOAD_URL]: (state: State): State => ({
+      ...state,
+      wordpress_upload_url: null,
     }),
     [UPDATE]: (state: State, action: { type: string; payload: Partial<MediaFile> }): State => ({
       ...state,
@@ -159,6 +180,7 @@ export const selectors = {
   slugAutogenerationEnabled: (state: State) => state.slug_autogeneration_enabled,
   files: (state: State) => state.files,
   selectedFiles: (state: State) => state.selectedFiles,
+  wordpressUploadUrl: (state: State) => state.wordpress_upload_url,
 }
 
 export const actions = {

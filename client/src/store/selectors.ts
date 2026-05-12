@@ -160,6 +160,7 @@ const mediafiles = {
   isInitializing: createSelector(root.mediafiles, mediafilesStore.selectors.isInitializing),
   files: createSelector(root.mediafiles, mediafilesStore.selectors.files),
   selectedFiles: createSelector(root.mediafiles, mediafilesStore.selectors.selectedFiles),
+  wordpressUploadUrl: createSelector(root.mediafiles, mediafilesStore.selectors.wordpressUploadUrl),
   slugAutogenerationEnabled: createSelector(
     root.mediafiles,
     mediafilesStore.selectors.slugAutogenerationEnabled
