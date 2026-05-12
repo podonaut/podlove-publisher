@@ -31,19 +31,8 @@ class WP_REST_PodloveOnboarding_Controller extends \WP_REST_Controller
 
     public function update_items($request)
     {
-        // activate File-Upload-Module and set default settings
-        if (!\Podlove\Modules\Base::is_active('wordpress_file_upload')) {
-            \Podlove\Modules\Base::activate('wordpress_file_upload');
-        }
-        $upload_modul = Wordpress_File_Upload::instance();
-        $upload_modul_dir = $upload_modul->get_module_option('upload_subdir');
-        if (empty($upload_modul_dir)) {
-            $upload_modul->update_module_option('upload_subdir', 'podlove-media');
-        }
-        // set upload loaction to emty
-        $settings = get_option('podlove_podcast');
-        $settings['media_file_base_uri'] = '';
-        update_option('podlove_podcast', $settings);
+        Wordpress_File_Upload::activate_and_setup();
+
         // activated contributor module
         if (isset($request['contributor'])) {
             $contributor = $request['contributor'];

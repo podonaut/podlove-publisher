@@ -51,6 +51,25 @@ class Wordpress_File_Upload extends \Podlove\Modules\Base
         }
     }
 
+    public static function activate_and_setup()
+    {
+        // activate File-Upload-Module and set default settings
+        if (!\Podlove\Modules\Base::is_active('wordpress_file_upload')) {
+            \Podlove\Modules\Base::activate('wordpress_file_upload');
+        }
+
+        $upload_module = self::instance();
+        $upload_module_dir = $upload_module->get_module_option('upload_subdir');
+        if (empty($upload_module_dir)) {
+            $upload_module->update_module_option('upload_subdir', 'podlove-media');
+        }
+
+        // set upload location to empty
+        $settings = get_option('podlove_podcast');
+        $settings['media_file_base_uri'] = '';
+        update_option('podlove_podcast', $settings);
+    }
+
     public function register_public_hooks()
     {
         add_filter('podlove_media_file_base_uri', [$this, 'set_media_file_base_uri']);
