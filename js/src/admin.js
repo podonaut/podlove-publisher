@@ -214,10 +214,6 @@ jQuery(function ($) {
 		PODLOVE.DashboardFeedValidation($(this));
 	});
 
-	$("#asset_validation").each(function () {
-		PODLOVE.DashboardAssetValidation($(this));
-	});
-
 	$("#podlove_podcast").each(function () {
 		PODLOVE.Episode($(this));
 	});

@@ -36,9 +36,10 @@ class FileValidation
             }
 
             $media_files[$row['episode_id']][$row['episode_asset_id']] = [
-                'size' => $row['size'],
-                'media_file_id' => $row['media_file_id'],
-                'active' => $row['active']
+                'asset_id' => (int) $row['episode_asset_id'],
+                'size' => (int) $row['size'],
+                'media_file_id' => (int) $row['media_file_id'],
+                'active' => (bool) $row['active']
             ];
         }
 
@@ -46,17 +47,33 @@ class FileValidation
         $episodes = $podcast->episodes(['post_status' => ['private', 'draft', 'publish', 'pending', 'future']]);
         $assets = Model\EpisodeAsset::all();
 
-        $header = [__('Episode', 'podlove-podcasting-plugin-for-wordpress')];
-        foreach ($assets as $asset) {
-            $header[] = esc_html($asset->title);
-        }
-        $header[] = __('Status', 'podlove-podcasting-plugin-for-wordpress');
+        $asset_validation_data = [
+            'assets' => array_map(function ($asset) {
+                return [
+                    'id' => (int) $asset->id,
+                    'title' => $asset->title,
+                ];
+            }, $assets),
+            'episodes' => array_map(function ($episode) use ($media_files) {
+                $files = $media_files[$episode->id] ?? [];
+                unset($files['post_status']);
+
+                return [
+                    'id' => (int) $episode->id,
+                    'post_id' => (int) $episode->post_id,
+                    'label' => is_null($episode->slug)
+                        ? __('Slug is missing', 'podlove-podcasting-plugin-for-wordpress')
+                        : $episode->slug(),
+                    'slug_missing' => is_null($episode->slug),
+                    'edit_url' => admin_url('post.php?post='.$episode->post_id.'&action=edit'),
+                    'status' => get_post_status($episode->post_id),
+                    'files' => array_values($files),
+                ];
+            }, $episodes),
+        ];
 
         \Podlove\load_template('settings/dashboard/file_validation', [
-            'episodes' => $episodes,
-            'assets' => $assets,
-            'media_files' => $media_files,
-            'header' => $header,
+            'asset_validation_data' => $asset_validation_data,
         ]);
     }
 }

@@ -2,6 +2,7 @@ import PodloveDescription from './description'
 import PodloveChapters from './chapters'
 import PodloveTranscripts from './transcripts'
 import PodloveAuphonic from './auphonic'
+import PodloveAssetValidation from './asset_validation'
 import PodloveContributors from './contributors'
 import PodloveMediaFiles from './mediafiles'
 import PodlovePlusFileMigration from './plus_file_migration'
@@ -17,6 +18,7 @@ export default {
   PodloveChapters,
   PodloveTranscripts,
   PodloveAuphonic,
+  PodloveAssetValidation,
   PodloveContributors,
   PodloveMediaFiles,
   PodloveRelatedEpisodes,
