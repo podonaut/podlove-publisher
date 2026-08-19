@@ -125,6 +125,12 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 
 == Changelog ==
 
+= 4.5.6 =
+
+**Security**
+
+* Prevent authenticated stored cross-site scripting through episode contributor comments.
+
 = 4.5.5 =
 
 **Security**

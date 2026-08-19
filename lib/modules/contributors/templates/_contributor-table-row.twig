@@ -1,34 +1,34 @@
 <tr>
 	{% if option.avatars == "yes" %}
 		<td class="avatar_cell">
-			{{ contributor.image.html({width: size|default(50), height: size|default(50), class: "avatar avatar-" ~ size|default(50) ~  " photo", alt: "avatar" }) }}
+			{{ contributor.image.html({width: size|default(50), height: size|default(50), class: "avatar avatar-" ~ size|default(50) ~  " photo", alt: "avatar" })|raw }}
 		</td>
 	{% endif %}
 	<td class="title_cell">
-		{{ contributor.name }}
+		{{ contributor.name|e('html') }}
 		{% if contributor.comment %}
-			<br><em>{{ contributor.comment }}</em>
+			<br><em>{{ contributor.comment|e('html') }}</em>
 		{% endif %}
 	</td>
 	{% if option.groups == "yes" %}
 		<td class="group_cell">
-			{{ contributor.group }}
+			{{ contributor.group|e('html') }}
 		</td>
 	{% endif %}
 	{% if option.roles == "yes" %}
 		<td class="role_cell">
-			{{ contributor.role }}
+			{{ contributor.role|e('html') }}
 		</td>
 	{% endif %}
 	<td class="social_cell">
 		{% for service in contributor.services({category: "social"}) %}
-			<a target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl }}">
+			<a target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl|esc_url }}">
 				{{
 					service.image.html({
 						width: 20, 
 						class: "podlove-contributor-button",
 						alt: service.title ~ " Icon"
-					}) 
+					})|raw
 				}}
 			</a>
 		{% endfor %}
@@ -36,13 +36,13 @@
 	{% if option.donations == "yes" %}
 		<td class="donation_cell">
 		{% for service in contributor.services({category: "donation"}) %}
-			<a target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl }}">
+			<a target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl|esc_url }}">
 				{{
 					service.image.html({
 						width: 20, 
 						class: "podlove-contributor-button",
 						alt: service.title ~ " Icon"
-					}) 
+					})|raw
 				}}
 			</a>
 		{% endfor %}
@@ -55,10 +55,10 @@
 				<a target="_blank"
 					class="FlattrButton"
 					style="display:none;"
-					title="Flattr {{ cTitle }}"
-					rel="flattr;uid:{{ contributor.flattr }};button:compact;popout:0"
-					href="{{ contributor.flattr_url }}">
-						{{ cTitle }}
+					title="Flattr {{ cTitle|e('html_attr') }}"
+					rel="flattr;uid:{{ contributor.flattr|e('html_attr') }};button:compact;popout:0"
+					href="{{ contributor.flattr_url|esc_url }}">
+						{{ cTitle|e('html') }}
 				</a>
 			{% endif %}
 		</td>

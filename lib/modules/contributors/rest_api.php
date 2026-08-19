@@ -828,7 +828,7 @@ class WP_REST_PodloveContributors_Controller extends \WP_REST_Controller
         }
 
         if (isset($request['comment'])) {
-            $comment = $request['comment'];
+            $comment = is_scalar($request['comment']) ? sanitize_textarea_field((string) $request['comment']) : '';
             $default->comment = $comment;
         }
 

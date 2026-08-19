@@ -280,7 +280,8 @@ class WP_REST_PodloveEpisodeContributions_Controller extends \WP_REST_Controller
                     }
                 }
                 if (isset($request['contributors'][$i]['comment'])) {
-                    $contrib->comment = $request['contributors'][$i]['comment'];
+                    $comment = $request['contributors'][$i]['comment'];
+                    $contrib->comment = is_scalar($comment) ? sanitize_textarea_field((string) $comment) : '';
                 }
                 if (isset($request['contributors'][$i]['position'])) {
                     $contrib->position = $request['contributors'][$i]['position'];
@@ -337,7 +338,8 @@ class WP_REST_PodloveEpisodeContributions_Controller extends \WP_REST_Controller
             }
         }
         if (isset($request['comment'])) {
-            $contribution->comment = $request['comment'];
+            $comment = $request['comment'];
+            $contribution->comment = is_scalar($comment) ? sanitize_textarea_field((string) $comment) : '';
         }
         if (isset($request['position'])) {
             $contribution->position = $request['position'];

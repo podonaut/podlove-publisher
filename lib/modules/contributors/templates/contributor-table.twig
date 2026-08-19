@@ -18,19 +18,19 @@
 		{% for contributor in episode.contributors({group: option.group, role: option.role}) %}
 			{% if contributor.visible %}
 				<li>
-					<strong>{{ contributor.name }}</strong>
-					{% if contributor.comment %}({{ contributor.comment }})
+					<strong>{{ contributor.name|e('html') }}</strong>
+					{% if contributor.comment %}({{ contributor.comment|e('html') }})
 					{% endif %}
 					<ul>
 						{% for service in contributor.services({category: "social"}) %}
 							<li>
-								<a href="{{ service.profileUrl }}">{{ service.title|e('html') }}</a>
+								<a href="{{ service.profileUrl|esc_url }}">{{ service.title|e('html') }}</a>
 							</li>
 						{% endfor %}
 						{% if option.donations == "yes" %}
 							{% for service in contributor.services({category: "donation"}) %}
 								<li>
-									<a href="{{ service.profileUrl }}">{{ service.title|e('html') }}</a>
+									<a href="{{ service.profileUrl|esc_url }}">{{ service.title|e('html') }}</a>
 								</li>
 							{% endfor %}
 						{% endif %}
@@ -49,38 +49,38 @@
 				<div class="podlove-contributors-card">
 					<div class="podlove-contributors-card-inner">
 						<div class="podlove-contributors-card-avatar">
-							{{ contributor.image.html({width: size|default(50), height: size|default(50), class: "", alt: "avatar" }) }}
+							{{ contributor.image.html({width: size|default(50), height: size|default(50), class: "", alt: "avatar" })|raw }}
 						</div>
 						<div class="podlove-contributors-card-person">
 							<div style="align-self: center">
-								<div style="font-weight: 400;">{{ contributor.name }}</div>
+								<div style="font-weight: 400;">{{ contributor.name|e('html') }}</div>
 								{% if contributor.comment %}
 									<div class="podlove-contributors-card-person-details">
-										<span>{{ contributor.comment }}</span>
+										<span>{{ contributor.comment|e('html') }}</span>
 									</div>
 								{% endif %}
 							</div>
 							<div class="podlove-contributors-card-services">
 								{% for service in contributor.services({category: "social"}) %}
-									<a class="podlove-contributors-card-services-service" target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl }}">
+									<a class="podlove-contributors-card-services-service" target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl|esc_url }}">
 										{{
 												service.image.html({
 													width: 20, 
 													class: "",
 													alt: service.title ~ " Icon"
-												}) 
+											})|raw
 											}}
 									</a>
 								{% endfor %}
 								{% if option.donations == "yes" %}
 									{% for service in contributor.services({category: "donation"}) %}
-										<a class="podlove-contributors-card-services-service" target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl }}">
+										<a class="podlove-contributors-card-services-service" target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl|esc_url }}">
 											{{
 													service.image.html({
 														width: 20, 
 														class: "",
 														alt: service.title ~ " Icon"
-													}) 
+												})|raw
 												}}
 										</a>
 									{% endfor %}

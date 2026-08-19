@@ -52,7 +52,9 @@ class ContributorDefaults
                 $c->contributor_id = $contributor_id;
 
                 if (isset($contributor['comment'])) {
-                    $c->comment = $contributor['comment'];
+                    $c->comment = is_scalar($contributor['comment'])
+                        ? sanitize_textarea_field(wp_unslash((string) $contributor['comment']))
+                        : '';
                 }
 
                 $c->position = $position++;

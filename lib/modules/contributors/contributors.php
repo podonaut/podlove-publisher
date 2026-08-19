@@ -22,7 +22,7 @@ class Contributors extends \Podlove\Modules\Base
     {
         add_action('podlove_module_was_activated_contributors', [$this, 'was_activated']);
         add_filter('podlove_episode_form_data', [$this, 'contributors_form_for_episode'], 10, 2);
-        add_action('save_post', [$this, 'update_contributors'], 10, 2);
+        add_action('podlove_save_episode', [$this, 'update_contributors']);
         add_action('podlove_podcast_settings_tabs', [$this, 'podcast_settings_tab']);
         add_action('update_option_podlove_podcast', [$this, 'save_setting'], 10, 2);
         add_action('rest_api_init', [$this, 'api_init']);
@@ -453,7 +453,7 @@ class Contributors extends \Podlove\Modules\Base
 
     public function update_contributors($post_id)
     {
-        if (!$post_id || !isset($_POST['episode_contributor'])) {
+        if (!$post_id || !isset($_POST['episode_contributor']) || !is_array($_POST['episode_contributor'])) {
             return;
         }
 
@@ -469,25 +469,39 @@ class Contributors extends \Podlove\Modules\Base
 
         $position = 0;
 
-        foreach ($_POST['episode_contributor'] as $contributor_appearance) {
+        $posted_contributors = wp_unslash($_POST['episode_contributor']);
+
+        foreach ($posted_contributors as $contributor_appearance) {
+            if (!is_array($contributor_appearance)) {
+                continue;
+            }
+
             foreach ($contributor_appearance as $contributor_id => $contributor) {
-                if (!$contributor_id) {
+                $contributor_id = absint($contributor_id);
+                if (!$contributor_id || !is_array($contributor)) {
                     continue;
                 }
 
                 $c = new \Podlove\Modules\Contributors\Model\EpisodeContribution();
 
-                if (!empty($contributor['role'])) {
-                    $c->role_id = \Podlove\Modules\Contributors\Model\ContributorRole::find_one_by_slug($contributor['role'])->id;
+                if (!empty($contributor['role']) && is_scalar($contributor['role'])) {
+                    $role = \Podlove\Modules\Contributors\Model\ContributorRole::find_one_by_slug(sanitize_key($contributor['role']));
+                    if ($role) {
+                        $c->role_id = $role->id;
+                    }
                 }
 
-                if (!empty($contributor['group'])) {
-                    $c->group_id = \Podlove\Modules\Contributors\Model\ContributorGroup::find_one_by_slug($contributor['group'])->id;
+                if (!empty($contributor['group']) && is_scalar($contributor['group'])) {
+                    $group = \Podlove\Modules\Contributors\Model\ContributorGroup::find_one_by_slug(sanitize_key($contributor['group']));
+                    if ($group) {
+                        $c->group_id = $group->id;
+                    }
                 }
 
                 $c->episode_id = $episode->id;
                 $c->contributor_id = $contributor_id;
-                $c->comment = stripslashes($contributor['comment']);
+                $comment = $contributor['comment'] ?? '';
+                $c->comment = is_scalar($comment) ? sanitize_textarea_field((string) $comment) : '';
                 $c->position = $position++;
                 $c->save();
             }
@@ -562,7 +576,9 @@ class Contributors extends \Podlove\Modules\Base
                 }
 
                 if (isset($contributor['comment'])) {
-                    $c->comment = $contributor['comment'];
+                    $c->comment = is_scalar($contributor['comment'])
+                        ? sanitize_textarea_field((string) $contributor['comment'])
+                        : '';
                 }
 
                 $c->contributor_id = $contributor_id;
