@@ -45,6 +45,9 @@
 ## Commit & Pull Request Guidelines
 - Commit messages follow a lightweight conventional style (examples: `feat: ...`, `fix: ...`, `chore: ...`, `change: ...`).
 - Changelog entries belong in `readme.txt` under the `== Changelog ==` header.
+- Before adding a changelog entry, check whether the latest changelog section is still unreleased or a new version section is
+  required. Every release commit is tagged with its version number, so verify the latest section with `git tag --list '<version>'`:
+  add to that section only when no matching tag exists; otherwise create the next version section.
 - PRs should include a clear description, linked issues if applicable, and notes on how changes were tested (commands and environment).
 
 ## Configuration Tips
