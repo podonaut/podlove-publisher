@@ -155,6 +155,10 @@ class TwigFilter
             return \wpautop($content);
         });
 
+        $ksesPostFilter = new Twig\TwigFilter('wp_kses_post', function ($content) {
+            return \wp_kses_post($content);
+        }, ['is_safe' => ['html']]);
+
         $escapeUrlFilter = new Twig\TwigFilter('esc_url', function ($url) {
             if (!is_scalar($url) && null !== $url) {
                 return '';
@@ -166,6 +170,7 @@ class TwigFilter
         $twig->addFilter($formatBytesFilter);
         $twig->addFilter($padLeftFilter);
         $twig->addFilter($wpautopFilter);
+        $twig->addFilter($ksesPostFilter);
         $twig->addFilter($escapeUrlFilter);
 
         // add functions

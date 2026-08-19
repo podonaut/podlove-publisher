@@ -9,22 +9,22 @@
     {% for episode in podcast.episodes %}
         <tr class="podcast_archive_element">
             <td class="thumbnail">
-                {{ episode.image({fallback: true}).html({width: 64, height: 64}) }}
+                {{ episode.image({fallback: true}).html({width: 64, height: 64})|raw }}
             </td>
             <td class="date">
                 <span class="release_date">
-                    {{ episode.publicationDate }}
+                    {{ episode.publicationDate|e('html') }}
                 </span>
             </td>
             <td class="title">
-                <a href="{{ episode.url }}">
-                    <strong>{{ episode.title }}</strong><br>
-                    {{ episode.subtitle }}
+                <a href="{{ episode.url|esc_url }}">
+                    <strong>{{ episode.title|e('html') }}</strong><br>
+                    {{ episode.subtitle|e('html') }}
                 </a>
             </td>
             <td class="duration">
                 {% set duration = episode.duration %}
-                {{ duration.hours }}:{{ duration.minutes|padLeft("0",2) }}:{{ duration.seconds|padLeft("0",2) }}
+                {{ duration.hours|e('html') }}:{{ duration.minutes|padLeft("0",2)|e('html') }}:{{ duration.seconds|padLeft("0",2)|e('html') }}
             </td>
         </tr>
     {% endfor %}

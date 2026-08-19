@@ -4,10 +4,10 @@
 		<li>
 			{% if option.avatars == "yes" %}
 				<span class="avatar">
-					{{ contributor.image.html({width: size|default(50), height: size|default(50), class: "avatar avatar-" ~ size|default(50) ~  " photo", alt: "avatar" }) }}
+					{{ contributor.image.html({width: size|default(50), height: size|default(50), class: "avatar avatar-" ~ size|default(50) ~  " photo", alt: "avatar" })|raw }}
 				</span>
 			{% endif %}
-			<span class="name">{{ contributor.name }}</span>
+			<span class="name">{{ contributor.name|e('html') }}</span>
 		</li>
 	{% endif %}
 {% endfor %}

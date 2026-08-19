@@ -9,7 +9,7 @@
     {% for file in episode.files %}
         {% set asset = file.asset %}
         {% if asset.downloadable and file.active %}
-            <option value="{{ file.id }}" data-raw-url="{{ file.publicUrl("download", "select-show") }}">{{ asset.title }} [{{ file.size|formatBytes }}]</option>
+            <option value="{{ file.id|e('html_attr') }}" data-raw-url="{{ file.publicUrl("download", "select-show")|esc_url }}">{{ asset.title|e('html') }} [{{ file.size|formatBytes|e('html') }}]</option>
         {% endif %}
     {% endfor %}
     </select>

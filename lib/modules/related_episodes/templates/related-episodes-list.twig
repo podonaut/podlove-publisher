@@ -3,14 +3,14 @@
 {% if related_episodes %}
 
 	{% if option.before %}
-		{{ option.before }}
+		{{ option.before|wp_kses_post }}
 	{% endif %}
 
 	{% apply spaceless %}
 		<ul>
 			{% for related_episode in related_episodes %}
 				<li>
-					<a href="{{ related_episode.url }}">{{ related_episode.title }}</a>
+					<a href="{{ related_episode.url|esc_url }}">{{ related_episode.title|e('html') }}</a>
 				</li>
 			{% endfor %}
 		</ul>

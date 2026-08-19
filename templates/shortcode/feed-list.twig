@@ -10,11 +10,11 @@
 		{% if feed.discoverable %}
 		    <tr>
             	<td>
-                    <a href="{{ feed.url }}">{{ feed.title }}</a>
+                    <a href="{{ feed.url|esc_url }}">{{ feed.title|e('html') }}</a>
                 </td>
                 <td>
-                    <span title="{{ feed.asset.fileType.mimeType }} ({{ feed.asset.fileType.extension }})">
-                        {{ feed.asset.title }}
+                    <span title="{{ feed.asset.fileType.mimeType|e('html_attr') }} ({{ feed.asset.fileType.extension|e('html_attr') }})">
+                        {{ feed.asset.title|e('html') }}
                     </span>
                 </td>
             </tr>

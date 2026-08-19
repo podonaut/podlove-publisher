@@ -4,7 +4,7 @@
 			{% if entry.type == "link" %}
 				{% set entry_url = entry.url|esc_url %}
 				{% if entry_url %}
-					<a href="{{ entry_url }}">{{ (entry.title ? entry.title : entry.url)|e('html') }}</a>
+					<a href="{{ entry_url|esc_url }}">{{ (entry.title ? entry.title : entry.url)|e('html') }}</a>
 				{% else %}
 					{{ (entry.title ? entry.title : entry.url)|e('html') }}
 				{% endif %}

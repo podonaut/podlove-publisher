@@ -4,7 +4,7 @@
 	    {% set asset = file.asset %}
 	    {% if asset.downloadable and file.active %}
 			<li>
-				<a href="{{ file.publicUrl("download", "buttonlist") }}">{{ asset.title }}<span class="size">{{ file.size|formatBytes }}</span></a>
+				<a href="{{ file.publicUrl("download", "buttonlist")|esc_url }}">{{ asset.title|e('html') }}<span class="size">{{ file.size|formatBytes|e('html') }}</span></a>
 			</li>
 	    {% endif %}
 	{% endfor %}

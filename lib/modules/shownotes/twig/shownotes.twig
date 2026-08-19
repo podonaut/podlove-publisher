@@ -34,7 +34,7 @@
 					{% if entry.icon %}
 						{% set icon_url = entry.icon|esc_url %}
 						{% if icon_url %}
-							<img class="psn-icon" src="{{ icon_url }}"/>
+							<img class="psn-icon" src="{{ icon_url|esc_url }}"/>
 						{% else %}
 							<div class="psn-icon psn-icon-default">&nbsp;</div>
 						{% endif %}
@@ -43,7 +43,7 @@
 					{% endif %}
 					{% set entry_url = entry.url|esc_url %}
 					{% if entry_url %}
-						<a class="psn-link" href="{{ entry_url }}">{{ (entry.title ? entry.title : entry.url)|e('html') }}</a>
+						<a class="psn-link" href="{{ entry_url|esc_url }}">{{ (entry.title ? entry.title : entry.url)|e('html') }}</a>
 					{% else %}
 						<span class="psn-link">{{ (entry.title ? entry.title : entry.url)|e('html') }}</span>
 					{% endif %}

@@ -26,6 +26,7 @@ class TwigSandbox
         'formatBytes',
         'padLeft',
         'wpautop',
+        'wp_kses_post',
         'esc_url',
     ];
 

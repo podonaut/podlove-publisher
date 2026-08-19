@@ -2,7 +2,7 @@
 	{% if option.title %}
 		<thead>
 			<tr>
-				<th colspan="2">{{ option.title }}</th>
+				<th colspan="2">{{ option.title|e('html') }}</th>
 			</tr>
 		</thead>
 	{% endif %}
@@ -11,19 +11,19 @@
 			{% if contributor.visible %}
 				<tr>
 					<td rowspan="2" class="avatar-cell" width="60">
-						{{ contributor.image.html({width: 60, height: 60, class: "avatar avatar-" ~ size ~  " photo", alt: "avatar" }) }}
+						{{ contributor.image.html({width: 60, height: 60, class: "avatar avatar-" ~ size ~  " photo", alt: "avatar" })|raw }}
 					</td>
 					<td class="social-cell">
-						<strong class="contributor-name">{{ contributor.name }}</strong>
+						<strong class="contributor-name">{{ contributor.name|e('html') }}</strong>
 						<div class="social-icons">
 							{% for service in contributor.services %}
-								<a target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl }}">
+								<a target="_blank" title="{{ service.title|e('html_attr') }}" href="{{ service.profileUrl|esc_url }}">
 									{{
 										service.image.html({
 											width: 32,
 											class: "podlove-contributor-button",
 											alt: service.title ~ " Icon"
-										})
+										})|raw
 									}}
 								</a>
 							{% endfor %}
@@ -35,7 +35,7 @@
 						<ul>
 							{% for episode in contributor.episodes %}
 								<li>
-									<a href="{{ episode.url }}">{{ episode.title }}</a>
+									<a href="{{ episode.url|esc_url }}">{{ episode.title|e('html') }}</a>
 								</li>
 							{% endfor %}
 						</ul>
