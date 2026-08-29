@@ -173,6 +173,7 @@ const mediafiles = {
 
 const runtime = {
   baseUrl: createSelector(root.runtime, runtimeStore.selectors.baseUrl),
+  canManageContributors: createSelector(root.runtime, runtimeStore.selectors.canManageContributors),
   nonce: createSelector(root.runtime, runtimeStore.selectors.nonce),
   base: createSelector(root.runtime, runtimeStore.selectors.base),
   auth: createSelector(root.runtime, runtimeStore.selectors.auth),

@@ -4,6 +4,9 @@ import { INIT, init } from './lifecycle.store';
 
 export type State = {
   baseUrl: string | null;
+  permissions: {
+    canManageContributors: boolean;
+  }
   api: {
     nonce: string | null;
     base: string | null;
@@ -14,6 +17,9 @@ export type State = {
 
 export const initialState: State = {
   baseUrl: null,
+  permissions: {
+    canManageContributors: false,
+  },
   api: {
     nonce: null,
     base: null,
@@ -26,6 +32,13 @@ export const reducer = handleActions({
   [INIT]: (state: State, action: typeof init): State => ({
     ...state,
     baseUrl: get(action, ['payload', 'baseUrl'], null),
+    permissions: {
+      canManageContributors: get(
+        action,
+        ['payload', 'permissions', 'canManageContributors'],
+        false
+      ),
+    },
     api: {
       base: get(action, ['payload', 'api', 'base'], null),
       nonce: get(action, ['payload', 'api', 'nonce'], null),
@@ -37,6 +50,7 @@ export const reducer = handleActions({
 
 export const selectors = {
   baseUrl: (state: State) => state.baseUrl,
+  canManageContributors: (state: State) => state.permissions.canManageContributors,
   nonce: (state: State) => state.api.nonce,
   base: (state: State) => state.api.base,
   auth: (state: State) => state.api.auth,

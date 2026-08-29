@@ -133,6 +133,7 @@ export default defineComponent({
     state: {
       contributors: PodloveContributor[]
       episodeContributions: ContributionOption[]
+      canManageContributors: boolean
     }
     trigger: any
     container: any
@@ -162,6 +163,7 @@ export default defineComponent({
       state: mapAppState({
         contributors: selectors.contributors.contributors,
         episodeContributions: selectors.episode.contributions,
+        canManageContributors: selectors.runtime.canManageContributors,
       }),
       trigger,
       container,
@@ -183,7 +185,7 @@ export default defineComponent({
   computed: {
     filteredContributors(): ContributorListOption[] {
       return [
-        ...(this.query.length > 0
+        ...(this.query.length > 0 && this.state.canManageContributors
           ? [
               {
                 id: null,
@@ -213,7 +215,7 @@ export default defineComponent({
     data(value) {
       if (value.id) {
         this.$emit('addContributor', value)
-      } else {
+      } else if (this.state.canManageContributors) {
         this.$emit('createContributor', this.query)
       }
     },

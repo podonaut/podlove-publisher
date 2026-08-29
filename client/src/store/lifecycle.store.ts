@@ -22,6 +22,9 @@ export const init = createAction<{
   episode?: {
     id: string;
     duration?: string;
+  },
+  permissions?: {
+    canManageContributors: boolean;
   }
 }>(INIT);
 

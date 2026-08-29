@@ -13,6 +13,7 @@
 add_action('admin_head', 'podlove_init_js_adapter', 3);
 
 add_filter('podlove_data_js', 'podlove_js_adapter_inject_settings');
+add_filter('podlove_data_js', 'podlove_js_adapter_inject_permissions');
 
 function podlove_init_js_adapter()
 {
@@ -76,6 +77,15 @@ function podlove_js_adapter_inject_settings($data)
 
     $data['media'] = ['base_uri' => $podcast->get_media_file_base_uri()];
     $data['modules'] = \Podlove\Modules\Base::get_active_module_names();
+
+    return $data;
+}
+
+function podlove_js_adapter_inject_permissions($data)
+{
+    $data['permissions'] = [
+        'canManageContributors' => current_user_can('podlove_manage_contributors'),
+    ];
 
     return $data;
 }

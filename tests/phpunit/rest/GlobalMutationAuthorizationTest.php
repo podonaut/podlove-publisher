@@ -125,6 +125,52 @@ class GlobalMutationAuthorizationTest extends WP_UnitTestCase
         $this->assertSame(1, Contributor::count());
     }
 
+    public function testEditorsCanReadFullContributorDirectoryButCannotMutateIt(): void
+    {
+        $contributor = new Contributor();
+        $contributor->visibility = 0;
+        $contributor->realname = 'Hidden Contributor';
+        $contributor->save();
+
+        wp_set_current_user($this->editor_id);
+
+        $read_request = new WP_REST_Request('GET', '/podlove/v2/contributors');
+        $read_request->set_param('filter', 'all');
+        $read_response = $this->server->dispatch($read_request);
+
+        $create_response = $this->server->dispatch(
+            new WP_REST_Request('POST', '/podlove/v2/contributors')
+        );
+
+        $update_request = new WP_REST_Request('PUT', '/podlove/v2/contributors/'.$contributor->id);
+        $update_request->set_param('realname', 'Changed Contributor');
+        $update_response = $this->server->dispatch($update_request);
+
+        $delete_response = $this->server->dispatch(
+            new WP_REST_Request('DELETE', '/podlove/v2/contributors/'.$contributor->id)
+        );
+
+        $this->assertSame(200, $read_response->get_status());
+        $this->assertSame('Hidden Contributor', $read_response->get_data()['contributors'][0]['realname']);
+        $this->assertSame(403, $create_response->get_status());
+        $this->assertSame(403, $update_response->get_status());
+        $this->assertSame(403, $delete_response->get_status());
+        $this->assertSame('Hidden Contributor', Contributor::find_by_id($contributor->id)->realname);
+        $this->assertSame(1, Contributor::count());
+    }
+
+    public function testContributorManagementPermissionIsExposedToClient(): void
+    {
+        wp_set_current_user($this->editor_id);
+        $editor_data = podlove_js_adapter_inject_permissions([]);
+
+        wp_set_current_user($this->contributor_manager_id);
+        $manager_data = podlove_js_adapter_inject_permissions([]);
+
+        $this->assertFalse($editor_data['permissions']['canManageContributors']);
+        $this->assertTrue($manager_data['permissions']['canManageContributors']);
+    }
+
     public function testSocialMutationsUseContributorAndPodcastCapabilities(): void
     {
         $contributor = new Contributor();

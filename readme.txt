@@ -132,6 +132,10 @@ This product includes GeoLite2 data created by MaxMind, available from http://ww
 * Prevent authenticated stored cross-site scripting through episode contributor comments.
 * Harden all bundled Twig templates with context-appropriate output escaping and sanitized intentional HTML.
 
+**Fixed**
+
+* Restore contributor assignment for editors while keeping contributor creation and directory changes restricted to users with the contributor-management capability ([#1604](https://github.com/podlove/podlove-publisher/issues/1604)).
+
 = 4.5.5 =
 
 **Security**
